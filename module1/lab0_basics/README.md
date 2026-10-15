@@ -220,11 +220,11 @@ seir-dashboard
 
 ## Task 5 – Capture Evidence Screenshots
 
-| Instance     | Private IPv4 address  |Connection method |Screenshot |Instance Terminated|
-|--------------|-----------------------|--------------|-----------|----------------|
-| `lab0-ec2-1` | 172.31.46.71  |EC2 Instance Connect  |screenshots/lab0-evidence/lab0-ec2-1|Yes
-| `lab0-ec2-2` | 172.31.47.75  |EC2 Instance Connect  |screenshots/lab0-evidence/lab0-ec2-2|Yes
-| `lab0-ec2-3` | 172.31.37.127 |SSH from local terminal (`lab0-key.pem`) |screenshots/lab0-evidence/lab0-ec2-3|Yes
+| Instance       | Private IPv4 address  |Connection method |Screenshot |Instance Terminated|
+|----------------|-----------------------|--------------|-----------|----------------|
+| `lab0-ec2-1`   | 172.31.46.71  |EC2 Instance Connect  |screenshots/lab0-evidence/lab0-ec2-1|Yes
+| `lab0-ec2-2`   | 172.31.47.75  |EC2 Instance Connect  |screenshots/lab0-evidence/lab0-ec2-2|Yes
+| `lab0-ec2-3`   | 172.31.37.127 |SSH from local terminal (`lab0-key.pem`) |screenshots/lab0-evidence/lab0-ec2-3|Yes
 
 
 ## Task 6 – Terminate the Instances
