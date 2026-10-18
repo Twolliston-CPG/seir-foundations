@@ -83,110 +83,19 @@ ls -l ~                              # long listing of the home directory
 | `whoami` | Logged-in user (`ec2-user`) | ec2-user |
 | `hostname -I` | Instance's private IP | 172.31.40.122 |
 | `uname -a` | Kernel and OS details | Linux ip-172-31-40-122.ec2.internal 6.18.54-121.166.amzn2023.x86_64 #2 SMP PREEMPT_DYNAMIC Tue Oct  6 23:11:34 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux |
-| `cat /etc/os-release` | Linux distribution and version | NAME="Amazon Linux"
-VERSION="2023"
-ID="amzn"
-ID_LIKE="fedora"
-VERSION_ID="2023"
-PLATFORM_ID="platform:al2023"
-PRETTY_NAME="Amazon Linux 2023.12.20261013"
-ANSI_COLOR="0;33"
-CPE_NAME="cpe:2.3:o:amazon:amazon_linux:2023"
-HOME_URL="https://aws.amazon.com/linux/amazon-linux-2023/"
-DOCUMENTATION_URL="https://docs.aws.amazon.com/linux/"
-SUPPORT_URL="https://aws.amazon.com/premiumsupport/"
-BUG_REPORT_URL="https://github.com/amazonlinux/amazon-linux-2023"
-VENDOR_NAME="AWS"
-VENDOR_URL="https://aws.amazon.com/"
-SUPPORT_END="2029-06-30" |
 | `uptime` | Time running and load average |  04:07:05 up 59 min,  1 user,  load average: 0.00, 0.00, 0.00 |
-| `df -h` | Disk usage, human-readable | Filesystem      Size  Used Avail Use% Mounted on
-devtmpfs        4.0M     0  4.0M   0% /dev
-tmpfs           479M     0  479M   0% /dev/shm
-tmpfs           192M  448K  192M   1% /run
-/dev/xvda1      8.0G  1.6G  6.4G  20% /
-tmpfs           479M     0  479M   0% /tmp
-/dev/xvda128     10M  1.3M  8.7M  13% /boot/efi
-tmpfs            96M     0   96M   0% /run/user/1000   |
-| `free -h` | Memory usage |                total        used        free      shared  buff/cache   available
-Mem:           957Mi       147Mi       560Mi       0.0Ki       249Mi       677Mi
-Swap:             0B          0B          0B   |   
-| `top` (`q` to exit) | Live process view |  1 root      20   0  173912  17772  11204 S   0.0   1.8   0:00.92 systemd                                                                        
-      2 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kthreadd                                                                       
-      3 root      20   0       0      0      0 S   0.0   0.0   0:00.00 pool_workqueue_release                                                         
-      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-rcu_gp                                                               
-      5 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-sync_wq                                                              
-      6 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-kvfree_rcu_reclaim                                                   
-      7 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-slub_flushwq                                                         
-      8 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-netns                                                                
-     10 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/0:0H-events_highpri                                                    
-     12 root      20   0       0      0      0 I   0.0   0.0   0:00.05 kworker/u60:0-events_unbound                                                   
-     13 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/R-mm_percpu_wq  |
-| `echo "Line 2" >> hello.txt && cat hello.txt` | Append to a file and show it | Line 2   |
-| `cp hello.txt new_project/ && ls new_project` | Copy a file into the folder | hello.txt  new_project |
-| `history` | Commands run this session |     1  exit
-    2  hostname -I
-    3  echo "Hello, World!" > hello.txt   # create a text file
-    4  cat hello.txt                       # show its contents -> Hello, World!
-    5  mkdir new_project && cd new_project # make a folder and move into it
-    6  pwd                                 # show current path -> /home/ec2-user/new_project
-    7  ls -l ~                             # long listing of the home directory
-    8  clear
-    9  whoami
-   10  hostname -I
-   11  uname -a
-   12  uptime
-   13  clear
-   14  ls
-   15  ls -l
-   16  clear
-   17  echo "Hello, World!" > hello.txt    # create a text 
-   18  cat hello.txt                        # -> Hello, World!
-   19  mkdir new_project && cd new_project  # make a folder and move into it
-   20  pwd                                  # -> /home/ec2-user/new_project
-   21  ls -l ~                              # long listing of the home directory
-   22  whoami
-   23  hostname -I
-   24  uname -a
-   25  cat /etc/os-release
-   26  uptime
-   27  df -h
-   28  free -h
-   29  top
-   30  clear
-   31  echo "Line 2" >> hello.txt && cat hello.txt
-   32  cp hello.txt new_project/ && ls new_project
-   33  cd ..
-   34  cp hello.txt new_project/ && ls new_project
-   35  history  |
-| `sudo dnf update -y` | Install OS updates | Amazon Linux 2023 Kernel Livepatch repository                                                                          821 kB/s |  89 kB     00:00    
-=======================================================================================================================================================
-WARNING:
-  A newer release of "Amazon Linux" is available.
-
-  Available Versions:
-
-  Version 2023.12.20261014:
-    Run the following command to upgrade to 2023.12.20261014:
-
-      dnf upgrade --releasever=2023.12.20261014
-
-    Release notes:
-     https://docs.aws.amazon.com/linux/al2023/release-notes/relnotes-2023.12.20261014.html
-
-  Version 2023.12.20261016:
-    Run the following command to upgrade to 2023.12.20261016:
-
-      dnf upgrade --releasever=2023.12.20261016
-
-    Release notes:
-     https://docs.aws.amazon.com/linux/al2023/release-notes/relnotes-2023.12.20261016.html
-
-=======================================================================================================================================================
-Dependencies resolved.
-Nothing to do.
-Complete!  |
-| `exit` | End the SSH session |
+| `df -h` | Disk usage, human-readable | Filesystem      Size  Used Avail Use% Mounted on|
+|||devtmpfs        4.0M     0  4.0M   0% /dev |
+|||tmpfs           479M     0  479M   0% /dev/shm |
+|||tmpfs           192M  448K  192M   1% /run |
+|||/dev/xvda1      8.0G  1.6G  6.4G  20% / |
+|||tmpfs           479M     0  479M   0% /tmp  |
+|||/dev/xvda128     10M  1.3M  8.7M  13% /boot/efi |
+|||tmpfs            96M     0   96M   0% /run/user/1000   |
+| `free -h` | Memory usage |                total        used        free      shared  buff/cache   available|
+|||Mem:           957Mi       147Mi       560Mi       0.0Ki       249Mi       677Mi |
+|||Swap:             0B          0B          0B   |   
+| `exit` | |End the SSH session |
 
 ### Task 6 – Screenshot and group discussion
 
