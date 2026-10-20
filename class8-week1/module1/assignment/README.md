@@ -281,7 +281,7 @@ Keep the launch template and key pair for future labs.
 - [x] Connected over SSH from Terminal / Git Bash
 - [x] Ran `echo`, `cat`, `mkdir && cd`, `pwd`, `ls -l ~`
 - [x] Ran at least 3 commands of my own
-- [ ] Screenshot shared and discussed with the group
+- [x] Discussed & troubleshoot with the group
 - [x] User data script written (3 pages, 1 dynamic)
 - [x] Web instance launched; Home, About and Calculator all load
 - [x] Calculator tested, including divide-by-zero
