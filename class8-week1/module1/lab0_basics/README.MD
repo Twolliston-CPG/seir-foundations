@@ -238,7 +238,7 @@ seir-dashboard
 5. In the confirmation dialog, choose **Terminate (delete)**.
 6. Refresh until all three show **Instance state: Terminated** (they disappear from the list after about an hour).
 
-📸 **Screenshot [`lab0-05-terminated`](Screenshots/lab0-evidence/lab0-05-terminated.png):** the Instances list showing all three `lab0-ec2-*` instances **Terminated**.
+📸 **Screenshot [`lab0-05-terminated`](screenshots/lab0-evidence/lab0-05-terminated.png):** the Instances list showing all three `lab0-ec2-*` instances **Terminated**.
 
 ### 6.1 Optional full cleanup
 
