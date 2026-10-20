@@ -107,11 +107,11 @@ lab0_basics/scripts/seir_ec2_userdata.sh
 2. Choose **Create launch template**.
 3. Choose **View launch templates** and confirm `lab0-template` appears.
 
-📸 **Screenshot `lab0-01-template.png`:** the launch template details page showing the key pair `lab0-key` and security group ID beginning with `sg-`.
+📸 **Screenshot [`lab0-01-template`](screenshots/lab0-evidence/lab0-01-template.png):** the launch template details page showing the key pair `lab0-key` and security group ID beginning with `sg-`.
 
-📸 **Screenshot `lab0-02-sg-inbound.png`:** **EC2 → Security Groups → `lab0-sg` → Inbound rules** tab showing only the SSH (22) and HTTP (80) rules from `0.0.0.0/0`.
+📸 **Screenshot [`lab0-02-sg-inbound`](screenshots/lab0-evidence/lab0-02-sg-inbound.png):** **EC2 → Security Groups → `lab0-sg` → Inbound rules** tab showing only the SSH (22) and HTTP (80) rules from `0.0.0.0/0`.
 
-📸 **Screenshot `lab0-03-sg-outbound.png`:** **EC2 → Security Groups → `lab0-sg` → Outbound rules** tab showing only the All Traffic, Protocol (All), and Port Range (All) rules from `0.0.0.0/0`.
+📸 **Screenshot [`lab0-03-sg-outbound`](screenshots/lab0-evidence/lab0-03-sg-outbound.png):** **EC2 → Security Groups → `lab0-sg` → Outbound rules** tab showing only the All Traffic, Protocol (All), and Port Range (All) rules from `0.0.0.0/0`.
 
 
 ---
@@ -137,7 +137,7 @@ lab0_basics/scripts/seir_ec2_userdata.sh
 3. Wait until each instance shows **Instance state: Running** and **Status check: 3/3 checks passed** (refresh with the 🔄 button).
 4. Note the **Public IPv4 address** of each instance.
 
-📸 **Screenshot `lab0-04-instances-running.png`:** the Instances list showing all three `lab0-ec2-*` instances **Running** with public IPs.
+📸 **Screenshot [`lab0-04-instances-running`](screenshots/lab0-evidence/lab0-04-instances-running.png):** the Instances list showing all three `lab0-ec2-*` instances **Running** with public IPs.
 
 ---
 
@@ -238,7 +238,7 @@ seir-dashboard
 5. In the confirmation dialog, choose **Terminate (delete)**.
 6. Refresh until all three show **Instance state: Terminated** (they disappear from the list after about an hour).
 
-📸 **Screenshot `lab0-05-terminated.png`:** the Instances list showing all three `lab0-ec2-*` instances **Terminated**.
+📸 **Screenshot [`lab0-05-terminated`](Screenshots/lab0-evidence/lab0-05-terminated.png):** the Instances list showing all three `lab0-ec2-*` instances **Terminated**.
 
 ### 6.1 Optional full cleanup
 
