@@ -1,0 +1,3 @@
+Spotter = Koffi Alexi
+Teammates = Siwel_Louis, Tim Wolliston, Koffi_aleki, Carlos Eduardo
+Days + Times when your team meets = M,W,F @ 8-11PM EST
