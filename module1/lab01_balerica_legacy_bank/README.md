@@ -89,6 +89,7 @@ Expected:
 ---
 ## Step 0.1 — Run additional commands on the server using menu.sh 
 
+📸 **Raw Code — `Additional Commands Menu` output**
 ![Step 0.1 - Additional Commands Script](scripts/menu.sh)
 
 📸 **Screenshot — `Additional Commands Menu` output**
@@ -97,6 +98,7 @@ Expected:
 
 ## Step 0.2 — Run Balerica Legacy Bank Access commands on the server using legacy_bank_app.sh 
 
+📸 **Raw Code — `FastAPI with a COBOL core commands Script` output**
 ![Step 0.2 - FastAPI with a COBOL core commands Script](scripts/legacy_bank_app.sh)
 
 📸 **Screenshot — `legacy_bank_app.sh app` output**
