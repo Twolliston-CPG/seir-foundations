@@ -84,7 +84,7 @@ Expected:
 
 📸 **Screenshot — `whoami` and `pwd` output**
 
-![Step 0 - whoami and pwd](screenshots/step0-whoami-pwd.png)
+![Step 0 - whoami and pwd](screenshots/Step0-whoami-pwd.png)
 
 ---
 ## Step 0.1 — Run additional commands on the server using menu.sh 
