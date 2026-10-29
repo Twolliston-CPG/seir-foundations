@@ -8,18 +8,56 @@
 
 ## Run 1 — Instance ID: `i-06bac9d9f7b16c1ed`
 
-- **Date / time:** 2026-10-29 / 9:39:04 · **Boot time (UTC):** 12:43:00 · **Public DNS:** ec2-54-197-24-174.compute-1.amazonaws.com
+- **Date / time:** 2026-10-29 / 9:39:04· **Boot time (UTC):** 12:43:00 · **Public DNS:** ec2-54-197-24-174.compute-1.amazonaws.com
 - **Screenshot:** [lab1_run1.jpg](screenshots/lab1_run1.jpg)
 
 **What changed this run:**
-_(e.g. first time through; followed the runbook line by line.)_
+1. I failed to read thoroughly the instructions for the notes.md and corrected an issue I had with step 8. I got the "offline-knowledge-base" in the responce.
+
+```bash
+curl -X POST http://127.0.0.1:8000/ask   -H 'Content-Type: application/json'   -d '{"question": "What does return code 8 mean?"}'
+```
+
+```bash
+  {"question":"What does return code 8 mean?","response":"COBOL return codes in this lab (the mainframe convention):\n  0  = success (account found / payment POSTED)\n  4  = warning (account not found)\n  8  = business rejection (not ACTIVE, zero amount, insufficient funds)\n  12 = environment failure (missing file, malformed arguments)\nCheck them in the shell with: echo $?\n\nCurrent ledger: 100001 (ACTIVE, 4756.52 USD), 100002 (ACTIVE, 2750.00 USD), 100003 (ACTIVE, 6703.70 USD).\n\nLast 10 transactions: 7 POSTED, 3 other.","source":"offline-knowledge-base"}[ec2-user@ip-172-31-25-242 balerica-bank]$
+```
+2. I mistakenly skipped capturing a screenshot for step3c. **View the fixed-width payment journal:** cat data/payments.dat
+
 
 **Errors hit and how I fixed them:**
-_(e.g. `ec2-metadata: command not found` → ran `sudo dnf install -y ec2-utils`.)_
+N/A
 
 **What I newly understood:**
-Why the web server must be started as the following
+1. For step 4 Why I needed to have the following done in AWS:
+
+1.a I created the IAM role balerica-ec2-bedrock-role with a trust policy for EC2.
+
+1.b I added an inline policy, bedrock-invoke, allowing InvokeModel and InvokeModelWithResponseStream on Anthropic models and this account's inference profiles.
+
+1.c I created the instance profile balerica-ec2-bedrock-profile, added the role to it, and attached it to the instance. The association showed associated.
+
+2. For step 4. Why the web server must be started as the following
+
 **(venv) [ec2-user@ip-172-31-31-78 balerica-bank]$ BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-6 AWS_REGION=us-east-1 uvicorn app.main:app --host 0.0.0.0 --port 8000** instead of **uvicorn app.main:app --host 0.0.0.0 --port 8000** in order for step8 to return an answer from an AI model
+
+3. For step 8. Why the **Ask Balerica AI for help** command needed to invoke an AWS Bedrock Model.
+
+   **This method will not return an answer from AI:**
+   ```bash
+   curl -X POST http://127.0.0.1:8000/ask \
+  -H 'Content-Type: application/json' \
+  -d '{"question": "What does return code 8 mean?"}'
+  ```
+
+**This method will return an answer from AI:**
+```bash
+curl -X POST http://127.0.0.1:8000/ask \
+  -H 'Content-Type: application/json'   \
+  -d '{"question": "What does return code 8 mean?", \
+  "model_id": "us.anthropic.claude-sonnet-4-6", \
+  "region": "us-east-1"}'
+```
+
 
 **Exact output line only this run would have:**
 ```text
@@ -56,19 +94,57 @@ INFO:     127.0.0.1:50886 - "POST /ask HTTP/1.1" 200 OK
 
 ---
 
-## Run 2 — Instance ID: `i-________________`
+## Run 2 — Instance ID: `i-i-03654eddcd51d549f`
 
-- **Date / time:** ____ · **Boot time (UTC):** ____ · **Public DNS:** ____
+- **Date / time:** 2026-10-29 / 15:36:32 · **Boot time (UTC):** 15:15 · **Public DNS:** ec2-13-222-163-199.compute-1.amazonaws.com
 - **Screenshot:** [lab1_run2.jpg](screenshots/lab1_run2.jpg)
 
 **What changed this run:**
+1. I failed to set the time zone after sshing into the 2nd run ec2 instance. This caused the times to be UTC time instead of the time for my actual time zone as seen in [lab1_run2.jpg](screenshots/lab1_run2.jpg)
+
+```bash 
+sudo timedatectl set-timezone America/New_York
+```
 
 **Errors hit and how I fixed them:**
+[ec2-user@ip-172-31-31-78 balerica-bank]$ aws sts get-caller-identity
+
+  aws: [ERROR]: An error occurred (NoCredentials): Unable to locate credentials. You can configure credentials by running "aws login".
+  [ec2-user@ip-172-31-31-78 balerica-bank]$
 
 **What I newly understood:**
+I have to attach the newly crreated profile to every new instance. To avoid this next time, I must choose **balerica-ec2-bedrock-profile** profile when you launch it. Found under the advance section.
 
 **Exact output line only this run would have:**
 ```text
+INFO:     Started server process [36236]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:34072 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35610 - "GET /chewbacca HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39490 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39496 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39504 - "POST /payments HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:39516 - "POST /payments HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:39530 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39534 - "POST /payments HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:39550 - "POST /payments HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:39562 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39564 - "POST /payments HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:39576 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39580 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49886 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49902 - "POST /payments HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:49914 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49930 - "POST /payments HTTP/1.1" 200 OK
+INFO:     108.83.255.226:49800 - "GET /docs HTTP/1.1" 200 OK
+INFO:     108.83.255.226:54836 - "GET /docs HTTP/1.1" 200 OK
+INFO:     108.83.255.226:54836 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     108.83.255.226:49663 - "GET /accounts/100001 HTTP/1.1" 200 OK
+/opt/balerica-bank/venv/lib64/python3.9/site-packages/boto3/compat.py:89: PythonDeprecationWarning: Boto3 will no longer support Python 3.9 starting April 29, 2026. To continue receiving service updates, bug fixes, and security updates please upgrade to Python 3.10 or later. More information can be found here: https://aws.amazon.com/blogs/developer/python-support-policy-updates-for-aws-sdks-and-tools/
+  warnings.warn(warning, PythonDeprecationWarning)
+INFO:     127.0.0.1:42008 - "POST /ask HTTP/1.1" 200 OK
 
 ```
 
