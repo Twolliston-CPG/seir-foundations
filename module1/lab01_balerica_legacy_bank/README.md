@@ -89,16 +89,16 @@ Expected:
 ---
 ## Step 0.1 — Run additional commands on the server using menu.sh 
 
-📸 **Raw Code — `Additional Commands Menu.sh` output**
+📸 **Raw Code — `Menu.sh`**
 ![Step 0.1 - Additional Commands Script](scripts/menu.sh)
 
 📸 **Screenshot — `Additional Commands Menu` output**
 ![Step 0.1 - Additional Command Menu](screenshots/step0.1-menu.png)
 
-
+---
 ## Step 0.2 — Run Balerica Legacy Bank Access commands on the server using legacy_bank_app.sh 
 
-📸 **Raw Code — `FastAPI with a COBOL core commands Script legacy_bank_app.sh` output**
+📸 **Raw Code — `legacy_bank_app.sh`**
 ![Step 0.2 - FastAPI with a COBOL core commands Script](scripts/legacy_bank_app.sh)
 
 📸 **Screenshot — `legacy_bank_app.sh app` output**
@@ -293,9 +293,13 @@ TXN0001             100001000000012550USDPOSTED  INV-1001
 
 > `000000012550` = 125.50. The decimal point is implied by the program — it is never stored in the file. See the [ledger layout](#fixed-width-ledger-dataaccountsdat).
 
-📸 **Screenshot — account lookup (found + not found with return codes)**
+📸 **Screenshot — account lookup (Not found with return codes)**
 
-![Step 3 - account lookup and return codes](screenshots/step3-account-lookup.png)
+![Step 3 - account lookup and return codes](screenshots/step3-account-not-found-lookup.png)
+
+📸 **Screenshot — account lookup (found with return codes)**
+
+![Step 3 - account lookup and return codes](screenshots/step3-account-found-lookup.png)
 
 📸 **Screenshot — payment posted and `payments.dat` contents**
 
@@ -322,7 +326,9 @@ Your prompt should now start with `(venv)`.
 Start the API server:
 
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 8000
+## uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-6 AWS_REGION=us-east-1 uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
 Expected:
@@ -389,7 +395,9 @@ curl http://127.0.0.1:8000/chewbacca
 
 📸 **Screenshot — both windows side by side, `/status` response in Window 2**
 
-![Step 5 - second terminal and status](screenshots/step5-status-check.png)
+![Step 5a - second terminal and status](screenshots/step5-status-check.png)
+
+![Step 5b - second terminal and chewbacca-status](screenshots/step5-status-chewbacca-check.png)
 
 ---
 
@@ -438,7 +446,9 @@ python3 swift/traffic_generator.py --count 3 --show-mt103
 
 📸 **Screenshot — traffic report showing `FAILED : 0` and "CONNECTIVITY CONFIRMED"**
 
-![Step 6 - SWIFT traffic report](screenshots/step6-swift-traffic.png)
+![Step 6a - SWIFT traffic report](screenshots/step6-swift-traffic.png)
+
+![Step 6b - view raw MT103 messages](screenshots/step6-raw-MT103-messages.png)
 
 📸 **Screenshot — Window 1 server log showing the incoming requests**
 
@@ -487,10 +497,15 @@ Click **Save rules**, then reload the `/docs` page.
 
 ☁️ **Run on: Linux EC2 instance** (Window 2)
 
+## Original version
 ```bash
 curl -X POST http://127.0.0.1:8000/ask \
   -H 'Content-Type: application/json' \
   -d '{"question": "What does return code 8 mean?"}'
+```
+## Invoke AWS Bedrock version
+```bash
+curl -X POST http://127.0.0.1:8000/ask   -H 'Content-Type: application/json'   -d '{"question": "What does return code 8 mean?", "model_id": "us.anthropic.claude-sonnet-4-6", "region": "us-east-1"}'
 ```
 
 The answer is grounded in your live ledger and recent transactions.
