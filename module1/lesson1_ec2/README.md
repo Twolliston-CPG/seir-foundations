@@ -1,5 +1,10 @@
 # Module 1 · Lesson 1 — Balerica Legacy Bank on EC2
 
+> **Goal:** Complete the Lesson 1 lab (**Steps 0–4**) **SEVEN times** this week, by hand, on **seven brand-new EC2 instances**, to build muscle memory.
+>
+> **Deadline:** Tuesday, November 3, 2026 @ **12:00 PM CST / 1:00 PM EST / 10:00 AM PST**
+>
+
 **SEIR Foundations — FastAPI with a COBOL core**
 
 Source runbook: [module1/lesson1_ec2/API/runbook.md](https://github.com/BalericaAI/SEIR-Foundations/blob/main/module1/lesson1_ec2/API/runbook.md)
@@ -311,6 +316,11 @@ TXN0001             100001000000012550USDPOSTED  INV-1001
 
 ☁️ **Run on: Linux EC2 instance** (Window 1)
 
+** Display ID:
+```bash
+ whoami && timedatectl show -p Timezone --value && date && ec2-metadata -i && uptime -p && TZ=UTC who -b && curl -s -4 ifconfig.me
+ ```
+
 Activate the Python virtual environment:
 
 ```bash
@@ -326,7 +336,9 @@ Your prompt should now start with `(venv)`.
 Start the API server:
 
 ```bash
-## uvicorn app.main:app --host 0.0.0.0 --port 8000
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+** -or- **
 
 BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-6 AWS_REGION=us-east-1 uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
@@ -503,6 +515,8 @@ curl -X POST http://127.0.0.1:8000/ask \
   -H 'Content-Type: application/json' \
   -d '{"question": "What does return code 8 mean?"}'
 ```
+** -or- **
+
 ## Invoke AWS Bedrock version
 ```bash
 curl -X POST http://127.0.0.1:8000/ask   -H 'Content-Type: application/json'   -d '{"question": "What does return code 8 mean?", "model_id": "us.anthropic.claude-sonnet-4-6", "region": "us-east-1"}'
@@ -597,6 +611,28 @@ Columns 37-44  status           PIC X(8)
 Columns 45-56  balance          PIC 9(10)V99   (implied decimal)
 Columns 57-59  currency         PIC X(3)
 ```
+---
+
+## Lab Run Log (graded table)
+
+> Fill in each row right after the run. Instance ID and Boot time must match the screenshot **character for character**.
+
+| Run | Date | Time zone | Instance ID | Boot time (UTC) | Public IPv4 DNS | Screenshot | Terminated? |
+|-----|------|-----------|-------------|-----------------|-----------------|------------|-------------|
+| 1 | YYYY-MM-DD | America/New_York | i-xxxxxxxxxxxxxxxxx | YYYY-MM-DD HH:MM:SS | ec2-x-x-x-x.compute-1.amazonaws.com | [lab1_run1.jpg](screenshots/lab1_run1.jpg) | Yes / No |
+| 2 | | | | | | [lab1_run2.jpg](screenshots/lab1_run2.jpg) | |
+| 3 | | | | | | [lab1_run3.jpg](screenshots/lab1_run3.jpg) | |
+| 4 | | | | | | [lab1_run4.jpg](screenshots/lab1_run4.jpg) | |
+| 5 | | | | | | [lab1_run5.jpg](screenshots/lab1_run5.jpg) | |
+| 6 | | | | | | [lab1_run6.jpg](screenshots/lab1_run6.jpg) | |
+| 7 | | | | | | [lab1_run7.jpg](screenshots/lab1_run7.jpg) | |
+
+**Self-audit before submitting:**
+- 7 different Instance IDs? 7 different DNS names?
+- No date has more than 3 runs? At least 3 distinct dates?
+- Every boot time is **before** its screenshot and **within 24 h** of it?
+
+---
 
 ### Troubleshooting
 
