@@ -1,14 +1,14 @@
 # Lab 1 Notes — lesson1_ec2 (Balerica Legacy Bank)
 
-**Name:** _________ · **Initials for TXN IDs:** XX · **Time zone:** America/New_York
+**Name:** Tim Wolliston · **Initials for TXN IDs:** TW · **Time zone:** America/New_York
 
 > Each run: start with run number + Instance ID, write **at least 3 sentences** (what changed, errors hit and fixes, what I newly understood), and paste **at least one exact output line** only that run would have (e.g. the uvicorn `Started server process [PID]` line, or a real error message).
 
 ---
 
-## Run 1 — Instance ID: `i-________________`
+## Run 1 — Instance ID: `i-06bac9d9f7b16c1ed`
 
-- **Date / time:** ____ · **Boot time (UTC):** ____ · **Public DNS:** ____
+- **Date / time:** 2026-10-29 / 9:39:04 · **Boot time (UTC):** 12:43:00 · **Public DNS:** ec2-54-197-24-174.compute-1.amazonaws.com
 - **Screenshot:** [lab1_run1.jpg](screenshots/lab1_run1.jpg)
 
 **What changed this run:**
@@ -18,11 +18,40 @@ _(e.g. first time through; followed the runbook line by line.)_
 _(e.g. `ec2-metadata: command not found` → ran `sudo dnf install -y ec2-utils`.)_
 
 **What I newly understood:**
-_(e.g. why the venv must be activated in each terminal.)_
+Why the web server must be started as the following
+**(venv) [ec2-user@ip-172-31-31-78 balerica-bank]$ BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-6 AWS_REGION=us-east-1 uvicorn app.main:app --host 0.0.0.0 --port 8000** instead of **uvicorn app.main:app --host 0.0.0.0 --port 8000** in order for step8 to return an answer from an AI model
 
 **Exact output line only this run would have:**
 ```text
-INFO:     Started server process [_____]
+
+INFO:     Started server process [38563]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:36980 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56436 - "GET /chewbacca HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42120 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42130 - "POST /payments HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:42146 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42162 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42178 - "POST /payments HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:42194 - "POST /payments HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:42208 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42212 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42218 - "POST /payments HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:42220 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42236 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39172 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39188 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39194 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39200 - "POST /payments HTTP/1.1" 200 OK
+INFO:     108.83.255.226:59790 - "GET /docs HTTP/1.1" 200 OK
+INFO:     108.83.255.226:59790 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     108.83.255.226:61389 - "GET /accounts/100001 HTTP/1.1" 200 OK
+/opt/balerica-bank/venv/lib64/python3.9/site-packages/boto3/compat.py:89: PythonDeprecationWarning: Boto3 will no longer support Python 3.9 starting April 29, 2026. To continue receiving service updates, bug fixes, and security updates please upgrade to Python 3.10 or later. More information can be found here: https://aws.amazon.com/blogs/developer/python-support-policy-updates-for-aws-sdks-and-tools/
+  warnings.warn(warning, PythonDeprecationWarning)
+INFO:     127.0.0.1:40488 - "POST /ask HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50886 - "POST /ask HTTP/1.1" 200 OK
 ```
 
 ---
