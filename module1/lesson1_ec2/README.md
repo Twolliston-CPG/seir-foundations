@@ -123,6 +123,12 @@ clear && seir-dashboard && ./legacy_bank_app.sh
 
 ☁️ **Run on: Linux EC2 instance** (Window 1)
 
+Set Time Zone:
+
+```bash
+sudo timedatectl set-timezone America/New_York
+```
+
 Install git:
 
 ```bash
@@ -533,8 +539,8 @@ curl -X POST http://127.0.0.1:8000/ask \
 ```bash
 curl -X POST http://127.0.0.1:8000/ask \
   -H 'Content-Type: application/json'   \
-  -d '{"question": "What does return code 8 mean?", \
-  "model_id": "us.anthropic.claude-sonnet-4-6", \
+  -d '{"question": "What does return code 8 mean?", 
+  "model_id": "us.anthropic.claude-sonnet-4-6", 
   "region": "us-east-1"}'
 ```
 
@@ -636,8 +642,8 @@ Columns 57-59  currency         PIC X(3)
 | Run | Date | Time zone | Instance ID | Boot time (UTC) | Public IPv4 DNS | Screenshot | Terminated? |
 |-----|------|-----------|-------------|-----------------|-----------------|------------|-------------|
 | 1 | 2026-10-29 | America/New_York | i-06bac9d9f7b16c1ed | 2026-10-29 12:43:00 | ec2-54-197-24-174.compute-1.amazonaws.com | [lab1_run1.jpg](screenshots/lab1_run1.jpg) | Yes |
-| 2 |2026-10-29 |America/New_York | i-03654eddcd51d549f | 2026-10-29 15:15:00| | [lab1_run2.jpg](screenshots/lab1_run2.jpg) | |
-| 3 | | | | | | [lab1_run3.jpg](screenshots/lab1_run3.jpg) | |
+| 2 |2026-10-29 | | i-03654eddcd51d549f | 2026-10-29 15:15:00| | [lab1_run2.jpg](screenshots/lab1_run2.jpg) | |
+| 3 | 2026-10-29| America/New_York |i-0d8a2c7ba9fd28649 |2026-10-29 16:45:00 |ec2-54-163-49-37.compute-1.amazonaws.com | [lab1_run3.jpg](screenshots/lab1_run3.jpg) | |
 | 4 | | | | | | [lab1_run4.jpg](screenshots/lab1_run4.jpg) | |
 | 5 | | | | | | [lab1_run5.jpg](screenshots/lab1_run5.jpg) | |
 | 6 | | | | | | [lab1_run6.jpg](screenshots/lab1_run6.jpg) | |
