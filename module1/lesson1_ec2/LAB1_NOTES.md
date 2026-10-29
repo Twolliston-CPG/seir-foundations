@@ -107,13 +107,13 @@ sudo timedatectl set-timezone America/New_York
 ```
 
 **Errors hit and how I fixed them:**
-[ec2-user@ip-172-31-31-78 balerica-bank]$ aws sts get-caller-identity
+[ec2-user@ip-172-31-31-78 balerica-bank]$ **aws sts get-caller-identity**
 
   aws: [ERROR]: An error occurred (NoCredentials): Unable to locate credentials. You can configure credentials by running "aws login".
   [ec2-user@ip-172-31-31-78 balerica-bank]$
 
 **What I newly understood:**
-I have to attach the newly crreated profile to every new instance. To avoid this next time, I must choose **balerica-ec2-bedrock-profile** profile when you launch it. Found under the advance section.
+I have to attach the newly crreated profile to every new instance. To avoid this next time, I must choose **balerica-ec2-bedrock-profile** profile when you launch it. Found under the advance details section/IAM instance profile.
 
 **Exact output line only this run would have:**
 ```text
@@ -150,19 +150,46 @@ INFO:     127.0.0.1:42008 - "POST /ask HTTP/1.1" 200 OK
 
 ---
 
-## Run 3 — Instance ID: `i-________________`
+## Run 3 — Instance ID: `i-0d8a2c7ba9fd28649`
 
-- **Date / time:** ____ · **Boot time (UTC):** ____ · **Public DNS:** ____
+- **Date / time:** 2026-10-29 / 13:03:19 · **Boot time (UTC):** 16:45· **Public DNS:** ec2-54-163-49-37.compute-1.amazonaws.com
 - **Screenshot:** [lab1_run3.jpg](screenshots/lab1_run3.jpg)
 
 **What changed this run:**
+N/A
 
 **Errors hit and how I fixed them:**
+N/A
 
 **What I newly understood:**
+N/A
 
 **Exact output line only this run would have:**
 ```text
+INFO:     Started server process [36061]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:36194 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59144 - "GET /chewbacca HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36528 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36534 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36548 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36552 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36566 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36572 - "POST /payments HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:36580 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36594 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36608 - "POST /payments HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:36612 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36614 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59192 - "GET /status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59202 - "POST /payments HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:59206 - "POST /payments HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59212 - "POST /payments HTTP/1.1" 200 OK
+INFO:     108.83.255.226:54785 - "GET /docs HTTP/1.1" 200 OK
+INFO:     108.83.255.226:54785 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     108.83.255.226:64188 - "GET /accounts/100001 HTTP/1.1" 200 OK
 
 ```
 
