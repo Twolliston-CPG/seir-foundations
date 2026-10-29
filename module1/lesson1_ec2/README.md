@@ -149,7 +149,7 @@ Resolving deltas: 100% ..., done.
 List what you downloaded:
 
 ```bash
-clear && seir-dashboard && ls SEIR-Foundations
+clear && seir-dashboard && whoami && date && timedatectl show -p Timezone --value && ec2-metadata -i && uptime -p && ls SEIR-Foundations
 ```
 
 Expected:
@@ -326,7 +326,7 @@ TXN0001             100001000000012550USDPOSTED  INV-1001
 
 ** Display ID:
 ```bash
- whoami && timedatectl show -p Timezone --value && date && ec2-metadata -i && uptime -p && TZ=UTC who -b && curl -s -4 ifconfig.me
+clear && seir-dashboard && whoami && timedatectl show -p Timezone --value && date && ec2-metadata -i && uptime -p && TZ=UTC who -b
  ```
 
 Activate the Python virtual environment:
@@ -345,9 +345,11 @@ Start the API server:
 
 ```bash
 uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
 
 ** -or- **
 
+```bash
 BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-6 AWS_REGION=us-east-1 uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
@@ -456,6 +458,10 @@ Expected (numbers will differ):
 
 > ✅ **REJECTED is not a failure** — about a third of the traffic is intentionally bad. The only number that must be **0** is `FAILED`.
 
+📸 **Screenshot — traffic report showing `FAILED : 0` and "CONNECTIVITY CONFIRMED"**
+
+![Step 6a - SWIFT traffic report](screenshots/step6-swift-traffic.png)
+
 Optional — view raw MT103 messages:
 
 ```bash
@@ -464,9 +470,7 @@ python3 swift/traffic_generator.py --count 3 --show-mt103
 
 > Look at Window 1: each payment you sent appears in the server log.
 
-📸 **Screenshot — traffic report showing `FAILED : 0` and "CONNECTIVITY CONFIRMED"**
-
-![Step 6a - SWIFT traffic report](screenshots/step6-swift-traffic.png)
+📸 **Screenshot — Optional — view raw MT103 messages:**
 
 ![Step 6b - view raw MT103 messages](screenshots/step6-raw-MT103-messages.png)
 
@@ -627,7 +631,7 @@ Columns 57-59  currency         PIC X(3)
 
 | Run | Date | Time zone | Instance ID | Boot time (UTC) | Public IPv4 DNS | Screenshot | Terminated? |
 |-----|------|-----------|-------------|-----------------|-----------------|------------|-------------|
-| 1 | YYYY-MM-DD | America/New_York | i-xxxxxxxxxxxxxxxxx | YYYY-MM-DD HH:MM:SS | ec2-x-x-x-x.compute-1.amazonaws.com | [lab1_run1.jpg](screenshots/lab1_run1.jpg) | Yes / No |
+| 1 | 2026-10-29 | America/New_York | i-06bac9d9f7b16c1ed | 2026-10-29 12:43:00 | ec2-54-197-24-174.compute-1.amazonaws.com | [lab1_run1.jpg](screenshots/lab1_run1.jpg) | Yes |
 | 2 | | | | | | [lab1_run2.jpg](screenshots/lab1_run2.jpg) | |
 | 3 | | | | | | [lab1_run3.jpg](screenshots/lab1_run3.jpg) | |
 | 4 | | | | | | [lab1_run4.jpg](screenshots/lab1_run4.jpg) | |
