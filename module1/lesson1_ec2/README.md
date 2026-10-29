@@ -94,28 +94,28 @@ Expected:
 ---
 ## Step 0.1 — Run optional additional commands on the server using menu.sh 
 
+```bash
+clear && seir-dashboard && ./menu.sh
+```
+
 📸 **Raw Code — `Menu.sh`**
 ![Step 0.1 - Additional Commands Script](scripts/menu.sh)
 
 📸 **Screenshot — `Additional Commands Menu` output**
 ![Step 0.1 - Additional Command Menu](screenshots/step0.1-menu.png)
 
-```bash
-clear && seir-dashboard && ./menu.sh
-```
-
 ---
 ## Step 0.2 — Run optional Balerica Legacy Bank Access commands on the server using legacy_bank_app.sh 
+
+```bash
+clear && seir-dashboard && ./legacy_bank_app.sh
+```
 
 📸 **Raw Code — `legacy_bank_app.sh`**
 ![Step 0.2 - FastAPI with a COBOL core commands Script](scripts/legacy_bank_app.sh)
 
 📸 **Screenshot — `legacy_bank_app.sh app` output**
 ![Step 0.2 - FastAPI with a COBOL core commands Menu](screenshots/step0.2-legacy_bank_app.png)
-
-```bash
-clear && seir-dashboard && ./legacy_bank_app.sh
-```
 
 ---
 
