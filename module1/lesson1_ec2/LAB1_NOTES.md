@@ -91,6 +91,28 @@ INFO:     108.83.255.226:61389 - "GET /accounts/100001 HTTP/1.1" 200 OK
 INFO:     127.0.0.1:40488 - "POST /ask HTTP/1.1" 200 OK
 INFO:     127.0.0.1:50886 - "POST /ask HTTP/1.1" 200 OK
 ```
+**Commands I know by heart:**
+```bash
+clear
+```
+```bash
+whoami
+```
+```bash
+ssh -1 my-key.pem ec2-user@MY-EC2-IP
+```
+```bash
+ mv ~/Downloads/my-key.pem ~/.ssh/ 
+```
+```bash
+chmod 400 ~/.ssh/my-key.pem.pem    
+```
+```bash
+clear && seir-dashboard && whoami && date && timedatectl show -p Timezone --value && ec2-metadata -i && uptime -p
+```
+
+clear && seir-dashboard && whoami && date && timedatectl show -p Timezone --value && ec2-metadata -i && uptime -p && ls SEIR-Foundations
+
 
 ---
 
@@ -269,29 +291,59 @@ INFO:     108.83.255.226:64188 - "GET /accounts/100001 HTTP/1.1" 200 OK
 
 ## COBOL practice
 
-- **Run used:** Run __ · **Instance ID:** `i-________________`
+- **Run used:** Run lab1_run3 · **Instance ID:** `i-0d8a2c7ba9fd28649`
 - **Folder:** `/opt/balerica-bank`
 
 ### Return code 0 — success ([cobol_rc0.jpg](screenshots/cobol_rc0.jpg))
 ```text
-$ ./cobol/bin/payment_post TXN-XX-0001 100001 25.00 USD XX-RC0
-(paste exact output)
+$ ./cobol/bin/payment_post TXN-TW-2019 100001 25.00 USD XX-RC0
+{
+  "transaction_id": "TXN93322233853454780",
+  "account_id": "100001",
+  "amount": 25,
+  "currency": "USD",
+  "status": "POSTED",
+  "reason": "APPROVED",
+  "cobol_return_code": 0,
+  "source": "payment_post.cob"
+}
 $ echo $?
 0
 ```
 
 ### Return code 4 — account not found ([cobol_rc4.jpg](screenshots/cobol_rc4.jpg))
 ```text
-$ ./cobol/bin/payment_post TXN-XX-0002 999999 25.00 USD XX-RC4
-(paste exact output)
+$ ./cobol/bin/payment_post TXN-TW-2002 999999 25.00 USD XX-RC4
+{
+  "detail": {
+    "transaction_id": "TXN93322005589752250",
+    "account_id": "999999",
+    "amount": 25,
+    "currency": "USD",
+    "status": "REJECTED",
+    "reason": "ACCOUNT NOT FOUND",
+    "cobol_return_code": 4,
+    "source": "payment_post.cob"
+  }
+}
 $ echo $?
 4
 ```
 
-### Return code 8 — business rejection, zero amount ([cobol_rc8.jpg](screenshots/cobol_rc8.jpg))
+### Return code 8 — business rejection, INSUFFICIENT FUNDS ([cobol_rc8.jpg](screenshots/cobol_rc8.jpg))
 ```text
-$ ./cobol/bin/payment_post TXN-XX-0003 100001 0.00 USD XX-RC8
-(paste exact output)
+{
+  "detail": {
+    "transaction_id": "TXN93323681347911156",
+    "account_id": "100001",
+    "amount": 8000,
+    "currency": "USD",
+    "status": "REJECTED",
+    "reason": "INSUFFICIENT FUNDS",
+    "cobol_return_code": 8,
+    "source": "payment_post.cob"
+  }
+}
 $ echo $?
 8
 ```
@@ -299,32 +351,58 @@ $ echo $?
 ### Return code 12 — environment failure, wrong folder ([cobol_rc12.jpg](screenshots/cobol_rc12.jpg))
 ```text
 $ cd ~ && /opt/balerica-bank/cobol/bin/account_lookup 100001
-(paste exact output — expect ERROR=CANNOT OPEN data/accounts.dat / FILE-STATUS=35)
+[ec2-user@ip-172-31-26-238 ~]$ cd ~ && /opt/balerica-bank/cobol/bin/account_lookup 100001
+ERROR=CANNOT OPEN data/accounts.dat
+FILE-STATUS=35
+[ec2-user@ip-172-31-26-238 ~]$ ls
 $ echo $?
 12
 ```
 
 ### Alice's balance decoded by hand ([cobol_ledger_decode.jpg](screenshots/cobol_ledger_decode.jpg))
 ```text
-$ grep '^100001' data/accounts.dat | cut -c45-56
-(paste — e.g. 000000500000)
+grep '^100001' data/accounts.dat | cut -c45-56
+
+000000275860
 ```
-Columns 45–56 are `PIC 9(10)V99` → the last two digits are cents → **Alice's balance = ________**
+grep '^100001' data/accounts.dat | cut -c45-56 | awk '{printf "%.2f\n", $1/100}'
+Columns 45–56 are `PIC 9(10)V99` → the last two digits are cents → **Alice's balance = 2758.60**
 
 ### Journal lines for my TXN IDs
 ```text
-$ grep 'TXN-XX-' data/payments.dat
-(paste exact lines)
+$ grep 'TXN-TW-2019' data/payments.dat
+[ec2-user@ip-172-31-26-238 balerica-bank]$ grep 'TXN-TW-2019' data/payments.dat
+TXN93322233853454780100001000000002500USDPOSTED  TXN-TW-2019
+[ec2-user@ip-172-31-26-238 balerica-bank]$ 
 ```
-**Did the balance change?** ____
+**Did the balance change?** no
 _(Expected: no — `payment_post` only reads the ledger and appends to the journal; balances are deducted only via the API's `POST /payments`, which updates SQLite and re-exports accounts.dat. RC 12 wrote no journal line.)_
 
 ---
 
 ## Mistakes I made
+I triggered a code 12 by making the payments.dat file read only
+I could not trigger code 8 with a 0.00 amount. I was able to trigger a code 8 by insufficient funds.
 - 
 - 
-- 
+
+## Git
+
+### clone of my HW repo ([git_clone.jpg](screenshots/git_clone.jpg))
+
+My HW Repo: https://github.com/Twolliston-CPG/seir-foundations.git
+
+```text
+[ec2-user@ip-172-31-26-238 ~]$ ls -la seir-foundations/module1
+total 0
+drwxr-xr-x. 6 ec2-user ec2-user 89 Oct 29 22:11 .
+drwxr-xr-x. 4 ec2-user ec2-user 68 Oct 29 22:11 ..
+drwxr-xr-x. 4 ec2-user ec2-user 57 Oct 29 22:11 assignment
+drwxr-xr-x. 4 ec2-user ec2-user 90 Oct 29 22:11 lab0.5_basics_contd
+drwxr-xr-x. 4 ec2-user ec2-user 57 Oct 29 22:11 lab0_basics
+drwxr-xr-x. 4 ec2-user ec2-user 78 Oct 29 22:11 lesson1_ec2
+[ec2-user@ip-172-31-26-238 ~]$ 
+```
 
 ## Commands I now know by heart
 - `whoami && TZ='America/New_York' date && ec2-metadata -i && uptime -s`
@@ -332,6 +410,7 @@ _(Expected: no — `payment_post` only reads the ledger and appends to the journ
 - `git clone https://github.com/BalericaAI/SEIR-Foundations.git`
 - `cd /opt/balerica-bank && source venv/bin/activate`
 - `uvicorn app.main:app --host 0.0.0.0 --port 8000`
+- `BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-6 AWS_REGION=us-east-1 uvicorn app.main:app --host 0.0.0.0 --port 8000`
 - `echo $?`
 - `cut -c45-56 data/accounts.dat`
 - 
