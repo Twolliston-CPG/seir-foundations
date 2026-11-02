@@ -1,0 +1,188 @@
+AI REVIEW — TIM WOLLISTON
+Runbook: module1/lesson1_ec2/API/runbook.md
+Topic:   Step 8 — What must be in place for AWS Bedrock (Anthropic model)
+         to return an answer to {"question": "What does return code 8 mean?"}
+Date:    2026-11-02
+=========================================================================
+
+
+WHAT DOES RETURN CODE 8 ACTUALLY MEAN?
+---------------------------------------
+The runbook defines this in the return-code table in Step 3:
+
+  Code 8 = business rejection
+           — account is not ACTIVE, the payment amount is zero,
+             or there are insufficient funds.
+
+This is the COBOL core's way of saying "the rules say no."
+It is not a crash and not an environment error — it is an intentional
+rejection by the bank's business logic.
+
+
+HOW THE REQUEST FLOWS FROM YOUR TERMINAL TO BEDROCK
+-----------------------------------------------------
+When you run Step 8:
+
+  curl -X POST http://127.0.0.1:8000/ask \
+    -H 'Content-Type: application/json' \
+    -d '{"question": "What does return code 8 mean?"}'
+
+Here is what happens at each hop:
+
+  Step 1.  curl sends an HTTP POST to the FastAPI server
+           running on your EC2 instance at port 8000.
+
+  Step 2.  FastAPI receives the request at the POST /ask endpoint
+           (defined in app/main.py).
+
+  Step 3.  FastAPI passes the question to the Balerica AI helper agent
+           (agents/balerica.py).
+
+  Step 4.  balerica.py checks whether Bedrock is reachable and configured.
+           - If YES  → it sends the question to Amazon Bedrock,
+                       which calls the Anthropic Claude model.
+                       The model's answer is returned in the response.
+           - If NO   → it falls back to the built-in offline knowledge base
+                       and the response includes "source": "offline-knowledge-base".
+
+  Step 5.  FastAPI sends the response JSON back to your curl command.
+
+
+THE THREE REQUIREMENTS FOR BEDROCK TO ANSWER (not fall back to offline)
+------------------------------------------------------------------------
+All three must be true at the same time.
+Missing any one of them looks identical from the outside —
+you still get a valid JSON response, but the source will say
+"offline-knowledge-base" with no error message.
+
+------------------------------------------------------------------
+REQUIREMENT 1 — IAM Role with Bedrock Permission attached to the EC2 instance
+------------------------------------------------------------------
+
+  What it is:
+    An IAM role is an AWS identity that grants the EC2 instance
+    permission to call AWS services — in this case, Amazon Bedrock.
+    Without it, any SDK call to Bedrock is rejected silently.
+
+  How to set it up (instructor action — requires IAM admin rights):
+    a. In the AWS Console, go to IAM > Roles > Create role.
+    b. Select "AWS service" as the trusted entity, choose "EC2".
+    c. Attach a policy that allows bedrock:InvokeModel
+       (see iam/PERMISSIONS.md in this folder for the exact policy JSON).
+    d. Give the role a name (e.g., "seir-bedrock-role") and create it.
+    e. Go to EC2 > Instances > your instance > Actions >
+       Security > Modify IAM role.
+    f. Select the role you just created and click Update IAM role.
+
+  How to verify it is attached:
+    In your EC2 SSH window, run:
+      curl -s http://169.254.169.254/latest/meta-data/iam/info
+    You should see JSON with "InstanceProfileArn" pointing to your role.
+    If you get a 404 or "Not Found", no role is attached.
+
+------------------------------------------------------------------
+REQUIREMENT 2 — AWS_REGION matches where you enabled Bedrock model access
+------------------------------------------------------------------
+
+  What it is:
+    Amazon Bedrock model access is enabled per region.
+    The code defaults to us-east-1 if AWS_REGION is not set.
+    If you enabled Claude in a different region (e.g., us-west-2)
+    but AWS_REGION is unset or set to us-east-1, the SDK calls
+    the wrong region and Bedrock never finds the model.
+
+  How to set it:
+    Before starting uvicorn, export the region where you enabled model access:
+      export AWS_REGION=us-east-1      # change to your actual region
+
+    To make it persist across SSH sessions, add it to your shell profile:
+      echo 'export AWS_REGION=us-east-1' >> ~/.bashrc
+      source ~/.bashrc
+
+  How to check which region Bedrock model access is enabled in:
+    In the AWS Console:
+      Amazon Bedrock > Model access
+    The region selector is in the top-right corner of the console.
+    Make sure it matches what you set for AWS_REGION.
+
+------------------------------------------------------------------
+REQUIREMENT 3 — BEDROCK_MODEL_ID is set to a valid model or inference-profile ID
+------------------------------------------------------------------
+
+  What it is:
+    The code ships with a placeholder value for BEDROCK_MODEL_ID.
+    You must replace it with a real Anthropic model ID before starting
+    the server, or the Bedrock call will fail and fall back silently.
+
+  Important: newer Claude models require the INFERENCE PROFILE ID,
+  not the base model ID. Inference profile IDs start with "us."
+
+  Example inference profile IDs for Claude (us-east-1):
+    us.anthropic.claude-3-5-sonnet-20241022-v2:0
+    us.anthropic.claude-3-haiku-20240307-v1:0
+    us.anthropic.claude-3-sonnet-20240229-v1:0
+
+  Where to find the correct ID:
+    In the AWS Console:
+      Amazon Bedrock > Inference > Cross-region inference > Inference profiles
+    Copy the "Profile ID" for the Claude model you enabled.
+
+  How to set it:
+    Before starting uvicorn, export the model ID:
+      export BEDROCK_MODEL_ID=us.anthropic.claude-3-5-sonnet-20241022-v2:0
+
+    To make it persist across SSH sessions:
+      echo 'export BEDROCK_MODEL_ID=us.anthropic.claude-3-5-sonnet-20241022-v2:0' >> ~/.bashrc
+      source ~/.bashrc
+
+
+THE CORRECT STARTUP SEQUENCE (all three requirements satisfied)
+---------------------------------------------------------------
+Run these in order before Step 8:
+
+  # 1. Go to the bank directory
+  cd /opt/balerica-bank
+
+  # 2. Activate the Python virtual environment
+  source venv/bin/activate
+
+  # 3. Set the AWS region (match where you enabled model access)
+  export AWS_REGION=us-east-1
+
+  # 4. Set the Bedrock model ID (use the inference profile ID)
+  export BEDROCK_MODEL_ID=us.anthropic.claude-3-5-sonnet-20241022-v2:0
+
+  # 5. Start the server (in Window 1)
+  uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+  # 6. In Window 2, run Step 8
+  curl -X POST http://127.0.0.1:8000/ask \
+    -H 'Content-Type: application/json' \
+    -d '{"question": "What does return code 8 mean?"}'
+
+
+WHAT A SUCCESSFUL BEDROCK RESPONSE LOOKS LIKE
+----------------------------------------------
+When all three requirements are met, the response JSON will include
+something like:
+
+  {
+    "answer": "Return code 8 is a business rejection from the COBOL core.
+               It means the payment was declined because the account is not
+               active, the amount is zero, or there are insufficient funds.
+               The transaction was not posted.",
+    "source": "amazon-bedrock",
+    "model":  "us.anthropic.claude-3-5-sonnet-20241022-v2:0"
+  }
+
+If "source" is "offline-knowledge-base" instead, re-check all three
+requirements above — in order — before assuming something else is wrong.
+
+
+SUMMARY — CHECKLIST
+--------------------
+  [ ] IAM role with bedrock:InvokeModel permission is attached to the EC2 instance
+  [ ] AWS_REGION is exported and matches the region where Claude model access was enabled
+  [ ] BEDROCK_MODEL_ID is exported and set to a real inference profile ID (starts with "us.")
+  [ ] Model access is enabled in the Bedrock console for the chosen Claude model
+  [ ] uvicorn was started AFTER the two environment variables were exported
