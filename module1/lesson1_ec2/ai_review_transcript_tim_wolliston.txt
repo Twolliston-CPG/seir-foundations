@@ -1,0 +1,141 @@
+AI REVIEW TRANSCRIPT — TIM WOLLISTON
+Session Date: 2026-11-02
+Runbook Reviewed: https://github.com/BalericaAI/SEIR-Foundations/blob/main/module1/lesson1_ec2/API/runbook.md
+=========================================================================
+
+
+USER:
+Please review with me this runbook:
+https://github.com/BalericaAI/SEIR-Foundations/blob/main/module1/lesson1_ec2/API/runbook.md
+
+Explain for me what are the necessary steps needed for AWS Bedrock's Anthropic
+model to return an answer to {"question": "What does return code 8 mean?"}
+found in step 8. Be as clear and precise as much as possible. Step by step
+instructions are welcomed. Place your explanation in this file:
+module1/lesson1_ec2/ai_review_tim_wolliston.txt
+
+
+CLAUDE:
+I fetched the full runbook from GitHub and identified the following:
+
+Step 8 of the runbook sends this curl command:
+
+  curl -X POST http://127.0.0.1:8000/ask \
+    -H 'Content-Type: application/json' \
+    -d '{"question": "What does return code 8 mean?"}'
+
+The request travels from curl → FastAPI (/ask endpoint) → agents/balerica.py
+→ Amazon Bedrock (Anthropic Claude model).
+
+For Bedrock to answer instead of falling back to "offline-knowledge-base",
+all three of the following must be true simultaneously:
+
+  1. An IAM role with bedrock:InvokeModel permission must be attached
+     to the EC2 instance.
+
+  2. The AWS_REGION environment variable must be set and must match the
+     region where Bedrock model access was enabled in the AWS Console.
+
+  3. BEDROCK_MODEL_ID must be set to a real model or inference profile ID
+     (not the shipped placeholder). Newer Claude models require the
+     inference profile ID, which starts with "us."
+
+What return code 8 actually means (from Step 3 of the runbook):
+  Code 8 = business rejection — account is not ACTIVE, the payment
+  amount is zero, or there are insufficient funds.
+
+I wrote a detailed step-by-step explanation covering:
+  - The full request flow (curl → FastAPI → balerica.py → Bedrock)
+  - What return code 8 means
+  - All three Bedrock requirements with setup instructions for each
+  - The correct startup sequence (export env vars before uvicorn)
+  - What a successful Bedrock response looks like
+  - A final checklist
+
+File written to: module1/lesson1_ec2/ai_review_tim_wolliston.txt
+
+
+USER:
+Commit and push the ai_review file.
+
+
+CLAUDE:
+Checked git status — only the ai_review file was staged (README.md and
+lab1.0_wk3_homework.md had unrelated local modifications, left untouched).
+
+Committed as:
+  "Add Step 8 Bedrock AI review notes for Tim Wolliston"
+  Commit: aa2eb8e
+
+User pushed via: git push origin main
+Result: cd268c6..aa2eb8e  main -> main
+
+
+USER:
+Verify the ai_review file is on GitHub.
+
+
+CLAUDE:
+Confirmed via GitHub API:
+  File:  ai_review_tim_wolliston.txt
+  Size:  7,836 bytes
+  URL:   github.com/Twolliston-CPG/seir-foundations/blob/main/
+         module1/lesson1_ec2/ai_review_tim_wolliston.txt
+
+
+USER:
+Commit and push the screenshots.
+
+
+CLAUDE:
+Two untracked screenshots were found:
+  - screenshots/application_startup_complete.jpg
+  - screenshots/git_clone (1).jpg
+
+Staged only these two files. Verified staged list before committing.
+
+Committed as:
+  "Add application startup and git clone screenshots"
+  Commit: 8e2c93f
+
+User pushed via: git push origin main
+Result: aa2eb8e..8e2c93f  main -> main
+
+GitHub verification confirmed both files present (445,916 bytes and
+161,467 bytes respectively). Total screenshots in folder: 37.
+
+
+USER:
+Commit and push the README and homework file changes.
+
+
+CLAUDE:
+Reviewed the diff before staging. Changes included:
+  README.md:
+    - Replaced "** -or- **" with a clear "Optional:" note explaining
+      that the Bedrock startup command requires AWS account configuration.
+
+  lab1.0_wk3_homework.md:
+    - Updated placeholder from "YourNameHere" to "Tim Wolliston" as example
+    - Added optional seir-dashboard alternative ID command
+    - Added optional Bedrock startup command with explanatory note
+    - Linked "Application startup complete." to its screenshot
+    - Linked "Started server process [12345]" to its screenshot
+    - Linked "git_clone.jpg" to its screenshot file
+    - Linked "lesson1_ec2/README.md" reference to the actual file
+    - Linked "lab1_notes.md" reference to LAB1_NOTES.md
+    - Fixed minor whitespace in Run 7 table row
+
+Committed as:
+  "Update README and homework with Bedrock notes and screenshot links"
+  Commit: e20b64c
+
+User pushed via: git push origin main
+Result: 8e2c93f..e20b64c  main -> main
+
+Final git status: nothing to commit, working tree clean.
+
+
+=========================================================================
+END OF SESSION TRANSCRIPT
+=========================================================================
