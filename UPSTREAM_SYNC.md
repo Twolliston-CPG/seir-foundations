@@ -89,7 +89,7 @@ This only downloads their changes into `upstream/*`. It does not change your fil
 
 ---
 
-## Step 3 — See the Differences Before Merging ✅ Done
+## Step 3 — Review Changes Before Merging ✅ Done
 
 ```bash
 git log --oneline main..upstream/main        # their new commits since your branches diverged
@@ -98,6 +98,14 @@ git diff main..upstream/main                 # full line-by-line diff
 ```
 
 The three-dot form (`...`) shows only what upstream changed since your branches split.
+
+> ⚠️ **Security review — do not skip this step.**
+> You are pulling code from an external repo. Before merging, inspect any new or changed files, especially:
+> - Shell scripts (`.sh`) — run on your EC2 instance
+> - Python files (`.py`) — especially in `API/` or `python/`
+> - Install scripts (`install.sh`) — run as root on your server
+>
+> `git fetch` is always safe — nothing is applied to your files until `git merge`. Use the diff commands above as your inspection step. If anything looks unexpected, read the file before merging.
 
 > **Status:** Reviewed 98 upstream commits. 162 files changed. Confirmed no critical conflicts with local work before merging.
 
