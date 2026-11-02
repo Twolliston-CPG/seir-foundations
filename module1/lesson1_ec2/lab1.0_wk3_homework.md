@@ -130,15 +130,17 @@ The daily limit applies **only** to the seven `lab1_run` screenshots. COBOL prac
 
 Find the **Public IPv4 DNS** and **Instance ID** in **EC2 → Instances → (your instance) → Details**.
 
-| Run | Date (local) | Time zone | Instance ID | Boot time (UTC) | Public IPv4 DNS | Screenshot | Terminated? |
-|-----|--------------|-----------|-------------|-----------------|-----------------|------------|-------------|
-| 1 | 2026-10-29 | America/Chicago | i-0abc123example | 2026-10-29 23:41:07 | ec2-3-91-0-1.compute-1.amazonaws.com | `screenshots/lab1_run1.jpg` | Yes |
-| 2 | | | | | | `screenshots/lab1_run2.jpg` | |
-| 3 | | | | | | `screenshots/lab1_run3.jpg` | |
-| 4 | | | | | | `screenshots/lab1_run4.jpg` | |
-| 5 | | | | | | `screenshots/lab1_run5.jpg` | |
-| 6 | | | | | | `screenshots/lab1_run6.jpg` | |
-| 7 | | | | | | `screenshots/lab1_run7.jpg` | |
+
+| Run | Date      | Time zone | Instance ID    | Boot time (UTC)    | Public IPv4 DNS | Screenshot | Terminated? |
+|-----|-----------|-----------|----------------|--------------------|-------------------------------------------------|------------|-------------|
+| 1 | 2026-10-29 | America/New_York | i-06bac9d9f7b16c1ed | 2026-10-29 12:43:00 | ec2-54-197-24-174.compute-1.amazonaws.com | [lab1_run1.jpg](screenshots/lab1_run1.jpg) | Yes |
+| 2 |2026-10-29 | | i-03654eddcd51d549f | 2026-10-29 15:15:00| | [lab1_run2.jpg](screenshots/lab1_run2.jpg) | |
+| 3 | 2026-10-29| America/New_York |i-0d8a2c7ba9fd28649 |2026-10-29 16:45:00 |ec2-54-163-49-37.compute-1.amazonaws.com | [lab1_run3.jpg](screenshots/lab1_run3.jpg) | |
+| 4 |2026-11-01 |America/New_York |i-035d7e71aca00a5a0 |2026-11-01 20:49 |ec2-100-55-46-159.compute-1.amazonaws.com | [lab1_run4.jpg](screenshots/lab1_run4.jpg) | |
+| 5 | 2026-11-01|America/New_York |i-0f8eb643ba9d52a6b |2026-11-01 21:39 |ec2-107-21-165-40.compute-1.amazonaws.com | [lab1_run5.jpg](screenshots/lab1_run5.jpg) | |
+| 6 |2026-11-01 |America/New_York |i-02ce7e8c9b2b58d5b |2026-11-01 22:10 |ec2-18-215-152-252.compute-1.amazonaws.com | [lab1_run6.jpg](screenshots/lab1_run6.jpg) | |
+| 7 | 2026-11-02|America/New_York  |i-0ec5903c2839f1edf |2026-11-02 17:15  | | [lab1_run7.jpg](screenshots/lab1_run7.jpg) | |
+
 
 (Row 1 is an example — replace it with your real values. The Instance ID and boot time must match your screenshot exactly. Boot time is in UTC, so in the evening in the US it may already show the next calendar day — that is expected.)
 
@@ -160,9 +162,9 @@ End the file with a **"Mistakes I made"** list (at least 3 items) and a **"Comma
 
 | Section | Deliverable |
 |---------|-------------|
-| Section 21 | Screenshot of the **completed** quiz, uploaded as `Maarek_Section21_quiz.jpg` |
-| Section 23 | Screenshot of the **completed** quiz, uploaded as `Maarek_Section23_quiz.jpg` |
-| Section 25 | Screenshot of the **completed** quiz, uploaded as `Maarek_Section25_quiz.jpg` |
+| Section 21 | Screenshot of the **completed** quiz, uploaded as [`Maarek_Section21_quiz.jpg`](screenshots/Maarek_section21_quiz.jpg) |
+| Section 23 | Screenshot of the **completed** quiz, uploaded as [`Maarek_Section23_quiz.jpg`](screenshots/Maarek_section23_quiz.jpg) |
+| Section 25 | Screenshot of the **completed** quiz, uploaded as [`Maarek_Section25_quiz.jpg`](screenshots/Maarek_section25_quiz.jpg) |
 
 ---
 
@@ -255,10 +257,10 @@ Run each command, then immediately run `echo $?` to see the return code.
 
 | Screenshot | Goal | Command to try |
 |------------|------|----------------|
-| `cobol_rc0.jpg` | **0** — success | `./cobol/bin/account_lookup 100001` |
-| `cobol_rc4.jpg` | **4** — account not found | `./cobol/bin/account_lookup 999999` |
-| `cobol_rc8.jpg` | **8** — business rejection | `./cobol/bin/payment_post TXN-XX-0001 100001 0.00 USD TEST-ZERO` (zero amount, with your initials in place of `XX`) — then try an amount bigger than the balance |
-| `cobol_rc12.jpg` | **12** — environment failure | `cd ~` then `/opt/balerica-bank/cobol/bin/account_lookup 100001` (wrong folder) |
+| [`cobol_rc0.jpg`](screenshots/cobol_rc0.jpg) | **0** — success | `./cobol/bin/account_lookup 100001` |
+| [`cobol_rc4.jpg`](screenshots/cobol_rc4.jpg) | **4** — account not found | `./cobol/bin/account_lookup 999999` |
+| [`cobol_rc8.jpg`](screenshots/cobol_rc8.jpg) | **8** — business rejection | `./cobol/bin/payment_post TXN-XX-0001 100001 0.00 USD TEST-ZERO` (zero amount, with your initials in place of `XX`) — then try an amount bigger than the balance |
+| [`cobol_rc12.jpg`](screenshots/cobol_rc12.jpg) | **12** — environment failure | `cd ~` then `/opt/balerica-bank/cobol/bin/account_lookup 100001` (wrong folder) |
 
 After the rc 12 test, go back with `cd /opt/balerica-bank`.
 

@@ -656,7 +656,7 @@ Columns 57-59  currency         PIC X(3)
 | 4 |2026-11-01 |America/New_York |i-035d7e71aca00a5a0 |2026-11-01 20:49 |ec2-100-55-46-159.compute-1.amazonaws.com | [lab1_run4.jpg](screenshots/lab1_run4.jpg) | |
 | 5 | 2026-11-01|America/New_York |i-0f8eb643ba9d52a6b |2026-11-01 21:39 |ec2-107-21-165-40.compute-1.amazonaws.com | [lab1_run5.jpg](screenshots/lab1_run5.jpg) | |
 | 6 |2026-11-01 |America/New_York |i-02ce7e8c9b2b58d5b |2026-11-01 22:10 |ec2-18-215-152-252.compute-1.amazonaws.com | [lab1_run6.jpg](screenshots/lab1_run6.jpg) | |
-| 7 | | | | | | [lab1_run7.jpg](screenshots/lab1_run7.jpg) | |
+| 7 | 2026-11-02|America/New_York  |i-0ec5903c2839f1edf |2026-11-02 17:15  | | [lab1_run7.jpg](screenshots/lab1_run7.jpg) | |
 
 **Self-audit before submitting:**
 - 7 different Instance IDs? 7 different DNS names?
