@@ -1,8 +1,41 @@
-# Syncing Updates from the Original Repo
+# Git Workflows
 
-Use this workflow to pull down changes from the original upstream repo into your fork without losing your own changes.
+Run all commands from `~/Documents/TheoWAF/seir-foundations`
+
+There are two distinct workflows:
+
+| Workflow | When to use |
+|----------|-------------|
+| **Workflow 1 — Push your changes** | After every lab run, screenshot, or edit — saves your work to GitHub |
+| **Workflow 2 — Pull upstream updates** | When the instructor pushes new course content to the original repo |
+
+---
+
+# Workflow 1 — Push Your Own Changes to GitHub
+
+Use this frequently — after completing a lab run, adding screenshots, updating notes, or making any edits you want saved to your fork.
+
+```bash
+cd ~/Documents/TheoWAF/seir-foundations
+git status                          # see what changed
+git add <files>                     # stage the files you want
+git commit -m "your message"        # commit
+git push origin main                # push to your fork on GitHub
+```
+
+> **Remotes:**
+> - `origin` → your fork: `https://github.com/Twolliston-CPG/seir-foundations.git`
+
+---
+
+# Workflow 2 — Pull Updates from the Original Course Repo
+
+Use this when the instructor pushes new content to `BalericaAI/SEIR-Foundations` and you want to bring it into your fork without losing your own changes.
 
 Run these from `~/Documents/TheoWAF/seir-foundations`
+
+> **Remotes:**
+> - `upstream` → original repo: `https://github.com/BalericaAI/SEIR-Foundations.git`
 
 ---
 
