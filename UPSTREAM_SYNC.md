@@ -56,6 +56,19 @@ git push origin main                # push to your fork on GitHub
 
 ---
 
+## Verify Your Work — Run After Either Workflow
+
+Four commands to confirm everything is clean and on GitHub:
+
+```bash
+git status                          # clean working tree?
+git log --oneline -5                # latest commits in history?
+git remote -v                       # origin and upstream still configured?
+gh api "repos/Twolliston-CPG/seir-foundations/commits" --jq '.[0:3] | .[] | {sha: .sha[:7], message: (.commit.message | split("\n")[0]), email: .commit.author.email}'   # changes on GitHub?
+```
+
+---
+
 # Workflow 2 — Pull Updates from the Original Course Repo
 
 Use this when the instructor pushes new content to `BalericaAI/SEIR-Foundations` and you want to bring it into your fork without losing your own changes.
