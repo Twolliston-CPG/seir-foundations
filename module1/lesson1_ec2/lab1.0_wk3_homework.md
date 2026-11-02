@@ -180,39 +180,584 @@ End the file with a **"Mistakes I made"** list (at least 3 items) and a **"Comma
 
 ---
 
-## 5. Required — `ai_review_YourNameHere.txt`
+## 5. Required — [`ai_review_tim_wolliston.txt]`(https://github.com/Twolliston-CPG/seir-foundations/blob/main/module1/lesson1_ec2/ai_review_tim_wolliston.txt)
 
 Review the Lesson 1 runbook with the AI of your choice (Claude, ChatGPT, Gemini, etc.). Ask it to explain the parts you did not fully understand.
 
 **You must submit the real conversation**, in one of two ways:
 
 - A **share link** to the conversation (most AI apps have a "Share" button), pasted at the top of the file, **or**
-- An **exported or copy-pasted transcript**, uploaded as `ai_review_transcript_YourNameHere.txt` (or `.pdf`).
+- An **exported or copy-pasted transcript**, uploaded as `ai_review_transcript_tim_wollitston.txt`(https://github.com/Twolliston-CPG/seir-foundations/blob/main/module1/lesson1_ec2/ai_review_transcript_tim_wolliston.txt) (or `.pdf`).
 
 Your summary must match the conversation. The most important part, and what is graded most heavily, is **how you checked** each answer.
 
 Use this format:
 
 ```
-AI used = ?
-Conversation share link = ? (or "see ai_review_transcript_YourNameHere")
+AI used = BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-6 
+Conversation share link = (https://github.com/Twolliston-CPG/seir-foundations/blob/main/module1/lesson1_ec2/ai_review_transcript_tim_wolliston.txt) [`or see ai_review_transcript_tim_wolliston`](module1/lesson1_ec2/ai_review_transcript_tim_wolliston.txt)
 
-Q1: (the question you asked)
+Q1: ("Please review with me this runbook:
+  https://github.com/BalericaAI/SEIR-Foundations/blob/main/module1/lesson1_ec2/API/runbook.md. explain
+  for me what are the necesarry step needed for AWS Bedrocks anthropic model to return a answer to
+  {"question": "What does return code 8 mean?"} found in step8.Be as clear and percise as much as
+  possible. Step by step intructions are welcomed. place your explanation in this file
+  module1/lesson1_ec2/ai_review_tim_wolliston.txt")
 AI's answer, in my own words:
-How I checked it (ran a command, re-read the runbook, asked my spotter, etc.):
+
+There are three requirements
+1 — IAM Role with Bedrock Permission attached to the EC2 instance
+2 — AWS_REGION matches where you enabled Bedrock model access
+3 — BEDROCK_MODEL_ID is set to a valid model or inference-profile ID
+
+After which follow the enhanced startup procedure
+
+How I checked it (I asked ai to produce the commands and make the necessary configuration afterwhich I logged into my AWS account and reviwed all the changes ai made on my behalf. 
+
+ran a command, re-read the runbook, asked my spotter, etc.):
+
+(minimum 5 questions)
 
 Q2: ...
-(minimum 5 questions)
+### YOU - 2026-10-28 23:24:02 UTC
+
+does iamadmin have access to amazon bedrock?
+
+### COMMAND / TOOL CALL (Bash) - 2026-10-28 23:24:04 UTC
+
+```bash
+which aws && aws sts get-caller-identity 2>&1; aws iam list-attached-user-policies --user-name iamadmin 2>&1; aws iam list-groups-for-user --user-name iamadmin 2>&1
+```
+
+### OUTPUT - 2026-10-28 23:24:07 UTC
+
+```text
+/usr/local/bin/aws
+{
+    "UserId": "<AWS-UNIQUE-ID>",
+    "Account": "<AWS-ACCOUNT-ID>",
+    "Arn": "arn:aws:iam::<AWS-ACCOUNT-ID>:user/AWSCLI"
+}
+{
+    "AttachedPolicies": [
+        {
+            "PolicyName": "AdministratorAccess",
+            "PolicyArn": "arn:aws:iam::aws:policy/AdministratorAccess"
+        }
+    ]
+}
+{
+    "Groups": []
+}
+```
+
+Q3: ...
+### YOU - 2026-10-28 23:25:12 UTC
+
+Check if an SCP blocks Bedrock
+
+### COMMAND / TOOL CALL (Bash) - 2026-10-28 23:25:13 UTC
+
+```bash
+aws organizations describe-organization 2>&1 | head -20; echo ---; aws organizations list-policies-for-target --target-id <AWS-ACCOUNT-ID> --filter SERVICE_CONTROL_POLICY 2>&1 | head -20
+```
+
+### OUTPUT - 2026-10-28 23:25:15 UTC
+
+```text
+aws: [ERROR]: An error occurred (AWSOrganizationsNotInUseException) when calling the DescribeOrganization operation: Your account is not a member of an organization.
+---
+
+aws: [ERROR]: An error occurred (AWSOrganizationsNotInUseException) when calling the ListPoliciesForTarget operation: Your account is not a member of an organization.
+```
+
+### CLAUDE - 2026-10-28 23:25:17 UTC
+
+No SCP blocks Bedrock, because account `<AWS-ACCOUNT-ID>` isn't part of an AWS Organization. Both Organizations calls returned `AWSOrganizationsNotInUseException`, so no SCPs apply.
+
+The IAM side was already clear, since `iamadmin` has `AdministratorAccess` and no permissions boundary. The one thing left is Bedrock model access. Some models, such as the Anthropic ones, may need first-time access or use-case approval in the Bedrock console. Running `aws bedrock list-foundation-models --region us-east-1` will show what's available.
+
+
+
+Q4: ...
+### YOU - 2026-10-28 23:25:47 UTC
+
+Check which Bedrock models are available
+
+### COMMAND / TOOL CALL (Bash) - 2026-10-28 23:25:49 UTC
+
+```bash
+aws bedrock list-foundation-models --region us-east-1 --query 'modelSummaries[].[providerName,modelId]' --output text 2>&1 | sort | head -150; echo ---; aws bedrock list-inference-profiles --region us-east-1 --query 'inferenceProfileSummaries[?contains(inferenceProfileId,`anthropic`)].inferenceProfileId' --output text 2>&1 | tr '\t' '\n' | head -40
+```
+
+### OUTPUT - 2026-10-28 23:25:51 UTC
+
+```text
+AI21 Labs	ai21.jamba-1-5-large-v1:0
+AI21 Labs	ai21.jamba-1-5-mini-v1:0
+Amazon	amazon.nova-2-5-sonic
+Amazon	amazon.nova-2-lite-v1:0
+Amazon	amazon.nova-2-lite-v1:0:256k
+Amazon	amazon.nova-2-multimodal-embeddings-v1:0
+Amazon	amazon.nova-2-sonic-v1:0
+Amazon	amazon.nova-lite-v1:0
+Amazon	amazon.nova-lite-v1:0:24k
+Amazon	amazon.nova-lite-v1:0:300k
+Amazon	amazon.nova-micro-v1:0
+Amazon	amazon.nova-micro-v1:0:128k
+Amazon	amazon.nova-micro-v1:0:24k
+Amazon	amazon.nova-pro-v1:0
+Amazon	amazon.nova-pro-v1:0:24k
+Amazon	amazon.nova-pro-v1:0:300k
+Amazon	amazon.titan-embed-g1-text-02
+Amazon	amazon.titan-embed-image-v1
+Amazon	amazon.titan-embed-image-v1:0
+Amazon	amazon.titan-embed-text-v1
+Amazon	amazon.titan-embed-text-v1:2:8k
+Amazon	amazon.titan-embed-text-v2:0
+Amazon	amazon.titan-embed-text-v2:0:8k
+Anthropic	anthropic.claude-fable-5
+Anthropic	anthropic.claude-fable-5-1
+Anthropic	anthropic.claude-haiku-4-5-20251001-v1:0
+Anthropic	anthropic.claude-haiku-5-5
+Anthropic	anthropic.claude-opus-4-1-20250805-v1:0
+Anthropic	anthropic.claude-opus-4-5-20251101-v1:0
+Anthropic	anthropic.claude-opus-4-6-v1
+Anthropic	anthropic.claude-opus-4-7
+Anthropic	anthropic.claude-opus-4-8
+Anthropic	anthropic.claude-opus-5
+Anthropic	anthropic.claude-opus-5-5
+Anthropic	anthropic.claude-sonnet-4-5-20250929-v1:0
+Anthropic	anthropic.claude-sonnet-4-6
+Anthropic	anthropic.claude-sonnet-5
+Anthropic	anthropic.claude-sonnet-5-5
+Cohere	cohere.embed-english-v3
+Cohere	cohere.embed-english-v3:0:512
+Cohere	cohere.embed-multilingual-v3
+Cohere	cohere.embed-multilingual-v3:0:512
+Cohere	cohere.embed-v4:0
+Cohere	cohere.rerank-v3-5:0
+DeepSeek	deepseek.r1-v1:0
+DeepSeek	deepseek.v3.2
+Google	google.gemma-3-12b-it
+Google	google.gemma-3-27b-it
+Google	google.gemma-3-4b-it
+Meta	meta.llama3-1-70b-instruct-v1:0
+Meta	meta.llama3-1-8b-instruct-v1:0
+Meta	meta.llama3-3-70b-instruct-v1:0
+Meta	meta.llama3-70b-instruct-v1:0
+Meta	meta.llama3-8b-instruct-v1:0
+Meta	meta.llama4-maverick-17b-instruct-v1:0
+Meta	meta.llama4-scout-17b-instruct-v1:0
+MiniMax	minimax.minimax-m2
+MiniMax	minimax.minimax-m2.1
+MiniMax	minimax.minimax-m2.5
+Mistral AI	mistral.devstral-2-123b
+Mistral AI	mistral.magistral-small-2509
+Mistral AI	mistral.ministral-3-14b-instruct
+Mistral AI	mistral.ministral-3-3b-instruct
+Mistral AI	mistral.ministral-3-8b-instruct
+Mistral AI	mistral.mistral-7b-instruct-v0:2
+Mistral AI	mistral.mistral-large-2402-v1:0
+Mistral AI	mistral.mistral-large-3-675b-instruct
+Mistral AI	mistral.mistral-small-2402-v1:0
+Mistral AI	mistral.mixtral-8x7b-instruct-v0:1
+Mistral AI	mistral.pixtral-large-2502-v1:0
+Mistral AI	mistral.voxtral-mini-3b-2507
+Mistral AI	mistral.voxtral-small-24b-2507
+Moonshot AI	moonshot.kimi-k2-thinking
+Moonshot AI	moonshotai.kimi-k2.5
+Moonshot AI	moonshotai.kimi-k3
+NVIDIA	nvidia.nemotron-nano-12b-v2
+NVIDIA	nvidia.nemotron-nano-3-30b
+NVIDIA	nvidia.nemotron-nano-9b-v2
+NVIDIA	nvidia.nemotron-super-3-120b
+OpenAI	openai.gpt-5.4
+OpenAI	openai.gpt-5.5
+OpenAI	openai.gpt-5.6-luna
+OpenAI	openai.gpt-5.6-sol
+OpenAI	openai.gpt-5.6-terra
+[... 2568 more characters omitted from this tool result ...]
+```
+
+### CLAUDE - 2026-10-28 23:25:57 UTC
+
+Bedrock lists about 110 foundation models in `us-east-1`, from 17 providers. This is the catalog of models offered in the region, as a signed-in user sees it. It doesn't prove each model is enabled for your account. To confirm that, run one `bedrock-runtime invoke-model` call against the model you want.
+
+| Provider | Models |
+|---|---|
+| **Anthropic** | Fable 5 and 5.1; Opus 4.1, 4.5, 4.6, 4.7, 4.8, 5 and 5.5; Sonnet 4.5, 4.6, 5 and 5.5; Haiku 4.5 and 5.5 |
+| **Amazon** | Nova 2 Lite, Nova Lite, Nova Micro, Nova Pro, Nova 2 Sonic, plus Titan and Nova embedding models |
+| **OpenAI** | GPT-5.4, 5.5 and 5.6 variants; GPT-6 and 6.1 variants; gpt-oss 120b and 20b (and the safeguard versions) |
+| **Meta** | Llama 3, 3.1 and 3.3; Llama 4 Maverick and Scout |
+| **Mistral AI** | Mistral Large 3, Devstral 2, Magistral, Ministral, Pixtral, Voxtral, Mixtral and Mistral 7B |
+| **Others** | AI21 Jamba, Cohere (embeddings and rerank), DeepSeek (R1, V3.2), Google Gemma 3, MiniMax, Moonshot Kimi, NVIDIA Nemotron, Qwen, Stability AI image tools, TwelveLabs, Writer Palmyra, Z.AI GLM, xAI Grok |
+
+Most newer Anthropic models can't be called by their bare model ID. They need an inference profile, so use the `us.` or `global.` prefix (for example `us.anthropic.claude-sonnet-5-5` or `global.anthropic.claude-opus-5-5`). Profiles exist for most of the Anthropic list. I only listed profiles for Anthropic, so check the others separately if you need them.
+
+I only checked `us-east-1`, so other regions may differ.
+
+Q5: ...
+
+### YOU - 2026-10-28 23:26:04 UTC
+
+Test invoking Claude Sonnet 5.5 on Bedrock
+
+### COMMAND / TOOL CALL (Bash) - 2026-10-28 23:26:06 UTC
+
+```bash
+cd /tmp && aws bedrock-runtime converse --region us-east-1 --model-id us.anthropic.claude-sonnet-5-5 --messages '[{"role":"user","content":[{"text":"Reply with the single word: pong"}]}]' --inference-config '{"maxTokens":20}' --query '{text:output.message.content[0].text,stop:stopReason,usage:usage}' 2>&1
+```
+
+### OUTPUT - 2026-10-28 23:26:08 UTC
+
+```text
+Exit code 254
+
+aws: [ERROR]: An error occurred (AccessDeniedException) when calling the Converse operation: anthropic.claude-sonnet-5-5 is not available for this account. You can explore other available models on Amazon Bedrock. For additional access options, contact AWS Sales at https://aws.amazon.com/contact-us/sales-support/
+```
+
+### CLAUDE - 2026-10-28 23:26:12 UTC
+
+The invocation failed with `AccessDeniedException: anthropic.claude-sonnet-5-5 is not available for this account`.
+
+- **Not an IAM problem:** The call was signed as the `AWSCLI` user, not `iamadmin`. Neither is the cause, since `AdministratorAccess` allows the action and no SCP applies. The error is Bedrock refusing the model for this account, so the model isn't enabled for it.
+- **Likely fixes:** In the Bedrock console, open Model access (or the model catalog) for `us-east-1`. Request or enable Anthropic's models, and submit the first-time use-case form if it asks. New or recently created accounts are sometimes restricted from newer models until they have billing history. If it still says unavailable after enabling, the AWS Sales contact in the error message is the remaining route.
+- **Other models:** I can test other Anthropic models, such as Haiku 4.5 or Sonnet 4.5, to see whether the whole Anthropic family is blocked or just this one. Running the test again as `iamadmin` isn't needed to answer that.
+
+Do you want me to run those tests?
+
+### YOU - 2026-10-28 23:26:54 UTC
+
+does this iamadmin user have acess to aws bedrock?
+
+### CLAUDE - 2026-10-28 23:26:58 UTC
+
+Yes for permissions, but model access is a separate question, and Sonnet 5.5 is currently blocked.
+
+- **Permissions:** `iamadmin` has `AdministratorAccess`, no permissions boundary and no SCP, and the policy simulator showed `bedrock:InvokeModel` as allowed. IAM won't stop it from using Bedrock.
+- **Models:** The Sonnet 5.5 call failed with "not available for this account". That block is on the account, so `iamadmin` would hit it too.
+- **What I haven't tested:** I never made a call as `iamadmin`. My CLI is signed in as `AWSCLI`, and I judged `iamadmin` only from its policies. To test it directly, run the call with `iamadmin`'s credentials or profile.
+
+I haven't tried any other model, so I can't say whether anything else on Bedrock is usable from this account yet.
+
+### YOU - 2026-10-28 23:27:17 UTC
+
+Test invoking Claude Haiku 4.5 on Bedrock
+
+### COMMAND / TOOL CALL (Bash) - 2026-10-28 23:27:18 UTC
+
+```bash
+cd /tmp && aws bedrock-runtime converse --region us-east-1 --model-id us.anthropic.claude-haiku-4-5-20251001-v1:0 --messages '[{"role":"user","content":[{"text":"Reply with the single word: pong"}]}]' --inference-config '{"maxTokens":20}' --query '{text:output.message.content[0].text,stop:stopReason,usage:usage}' 2>&1
+```
+
+### OUTPUT - 2026-10-28 23:27:20 UTC
+
+```text
+{
+    "text": "pong",
+    "stop": "end_turn",
+    "usage": {
+        "inputTokens": 15,
+        "outputTokens": 5,
+        "totalTokens": 20,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokens": 0
+    }
+}
+Shell cwd was reset to /Users/Twolliston/Documents/TheoWAF/seir-foundations
+```
+
+### CLAUDE - 2026-10-28 23:27:22 UTC
+
+Haiku 4.5 works on Bedrock. The call to `us.anthropic.claude-haiku-4-5-20251001-v1:0` in `us-east-1` returned `pong` (15 input tokens, 5 output).
+
+Anthropic access on this account is therefore not blocked as a whole, and only Sonnet 5.5 was refused. The call ran as the `AWSCLI` user, not `iamadmin`.
+
+I can test the other models you care about, such as Sonnet 4.5, Sonnet 4.6, Opus 4.5 or Haiku 5.5, to see which ones are enabled and which are blocked like Sonnet 5.5.
+
+### YOU - 2026-10-28 23:27:45 UTC
+
+Test invoking Claude Sonnet 4.5 on Bedrock
+
+### COMMAND / TOOL CALL (Bash) - 2026-10-28 23:27:46 UTC
+
+```bash
+cd /tmp && aws bedrock-runtime converse --region us-east-1 --model-id us.anthropic.claude-sonnet-4-5-20250929-v1:0 --messages '[{"role":"user","content":[{"text":"Reply with the single word: pong"}]}]' --inference-config '{"maxTokens":20}' --query '{text:output.message.content[0].text,stop:stopReason,usage:usage}' 2>&1
+```
+
+### OUTPUT - 2026-10-28 23:27:49 UTC
+
+```text
+{
+    "text": "pong",
+    "stop": "end_turn",
+    "usage": {
+        "inputTokens": 15,
+        "outputTokens": 5,
+        "totalTokens": 20,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokens": 0
+    }
+}
+Shell cwd was reset to /Users/Twolliston/Documents/TheoWAF/seir-foundations
+```
+
+### CLAUDE - 2026-10-28 23:27:51 UTC
+
+Sonnet 4.5 works on Bedrock. The call to `us.anthropic.claude-sonnet-4-5-20250929-v1:0` in `us-east-1` returned `pong` (15 input tokens, 5 output). It ran as the `AWSCLI` user, as before.
+
+Results so far:
+
+| Model | Result |
+|---|---|
+| Haiku 4.5 | Works |
+| Sonnet 4.5 | Works |
+| Sonnet 5.5 | Blocked: "not available for this account" |
+
+The 4.5 models work and the newer 5.5 one is blocked. The block may cover the newer 5.x family, but I've only tested Sonnet 5.5. I can test Sonnet 5, Haiku 5.5, Opus 5.5 and Sonnet 4.6 to see where the line falls.
+
+### YOU - 2026-10-28 23:27:56 UTC
+
+Test invoking Claude Haiku 5.5 on Bedrock
+
+### COMMAND / TOOL CALL (Bash) - 2026-10-28 23:27:57 UTC
+
+```bash
+cd /tmp && aws bedrock-runtime converse --region us-east-1 --model-id us.anthropic.claude-haiku-5-5 --messages '[{"role":"user","content":[{"text":"Reply with the single word: pong"}]}]' --inference-config '{"maxTokens":20}' --query '{text:output.message.content[0].text,stop:stopReason,usage:usage}' 2>&1
+```
+
+### OUTPUT - 2026-10-28 23:27:58 UTC
+
+```text
+Exit code 254
+
+aws: [ERROR]: An error occurred (AccessDeniedException) when calling the Converse operation: anthropic.claude-haiku-5-5 is not available for this account. You can explore other available models on Amazon Bedrock. For additional access options, contact AWS Sales at https://aws.amazon.com/contact-us/sales-support/
+```
+
+### CLAUDE - 2026-10-28 23:28:01 UTC
+
+Haiku 5.5 is blocked the same way as Sonnet 5.5. The error was `AccessDeniedException: anthropic.claude-haiku-5-5 is not available for this account`.
+
+| Model | Result |
+|---|---|
+| Haiku 4.5 | Works |
+| Sonnet 4.5 | Works |
+| Sonnet 5.5 | Blocked |
+| Haiku 5.5 | Blocked |
+
+The pattern points to the 5.x family being unavailable to this account, while the 4.5 models work. I haven't tested the other 5.x models (Sonnet 5, Opus 5, Opus 5.5, Fable 5 and 5.1) or the 4.x models in between (Sonnet 4.6, Opus 4.5 to 4.8). I can run those to see exactly where the cutoff is.
+
+### YOU - 2026-10-28 23:28:21 UTC
+
+Test invoking Claude Opus 4.5 on Bedrock
+
+### COMMAND / TOOL CALL (Bash) - 2026-10-28 23:28:22 UTC
+
+```bash
+cd /tmp && aws bedrock-runtime converse --region us-east-1 --model-id us.anthropic.claude-opus-4-5-20251101-v1:0 --messages '[{"role":"user","content":[{"text":"Reply with the single word: pong"}]}]' --inference-config '{"maxTokens":20}' --query '{text:output.message.content[0].text,stop:stopReason,usage:usage}' 2>&1
+```
+
+### OUTPUT - 2026-10-28 23:28:25 UTC
+
+```text
+{
+    "text": "pong",
+    "stop": "end_turn",
+    "usage": {
+        "inputTokens": 15,
+        "outputTokens": 5,
+        "totalTokens": 20,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokens": 0
+    }
+}
+Shell cwd was reset to /Users/Twolliston/Documents/TheoWAF/seir-foundations
+```
+
+### CLAUDE - 2026-10-28 23:28:26 UTC
+
+Opus 4.5 works on Bedrock. The call to `us.anthropic.claude-opus-4-5-20251101-v1:0` in `us-east-1` returned `pong` (15 input tokens, 5 output).
+
+| Model | Result |
+|---|---|
+| Haiku 4.5 | Works |
+| Sonnet 4.5 | Works |
+| Opus 4.5 | Works |
+| Sonnet 5.5 | Blocked |
+| Haiku 5.5 | Blocked |
+
+All three 4.5 models work and both 5.5 models I tried are blocked. I haven't tested the other 5.x models or the 4.6 to 4.8 models, so I can't say yet where the cutoff falls. I can test those next.
+
+### YOU - 2026-10-28 23:28:30 UTC
+
+Test invoking Claude Sonnet 4.6 on Bedrock
+
+### COMMAND / TOOL CALL (Bash) - 2026-10-28 23:28:31 UTC
+
+```bash
+cd /tmp && aws bedrock-runtime converse --region us-east-1 --model-id us.anthropic.claude-sonnet-4-6 --messages '[{"role":"user","content":[{"text":"Reply with the single word: pong"}]}]' --inference-config '{"maxTokens":20}' --query '{text:output.message.content[0].text,stop:stopReason,usage:usage}' 2>&1
+```
+
+### OUTPUT - 2026-10-28 23:28:33 UTC
+
+```text
+{
+    "text": "pong",
+    "stop": "end_turn",
+    "usage": {
+        "inputTokens": 15,
+        "outputTokens": 5,
+        "totalTokens": 20,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokens": 0
+    }
+}
+Shell cwd was reset to /Users/Twolliston/Documents/TheoWAF/seir-foundations
+```
+
+### CLAUDE - 2026-10-28 23:28:35 UTC
+
+Sonnet 4.6 works on Bedrock. The call to `us.anthropic.claude-sonnet-4-6` in `us-east-1` returned `pong` (15 input tokens, 5 output).
+
+| Model | Result |
+|---|---|
+| Haiku 4.5 | Works |
+| Sonnet 4.5 | Works |
+| Opus 4.5 | Works |
+| Sonnet 4.6 | Works |
+| Sonnet 5.5 | Blocked |
+| Haiku 5.5 | Blocked |
+
+The cutoff is somewhere after 4.6. I haven't tested Opus 4.6, 4.7 or 4.8, or Sonnet 5, Opus 5, Opus 5.5 and Fable 5 and 5.1. I can run those to narrow it down.
+
+### YOU - 2026-10-28 23:28:39 UTC
+
+Test invoking Claude Opus 4.8 on Bedrock
+
+### COMMAND / TOOL CALL (Bash) - 2026-10-28 23:28:40 UTC
+
+```bash
+cd /tmp && aws bedrock-runtime converse --region us-east-1 --model-id us.anthropic.claude-opus-4-8 --messages '[{"role":"user","content":[{"text":"Reply with the single word: pong"}]}]' --inference-config '{"maxTokens":20}' --query '{text:output.message.content[0].text,stop:stopReason,usage:usage}' 2>&1
+```
+
+### OUTPUT - 2026-10-28 23:28:41 UTC
+
+```text
+Exit code 254
+
+aws: [ERROR]: An error occurred (AccessDeniedException) when calling the Converse operation: anthropic.claude-opus-4-8 is not available for this account. You can explore other available models on Amazon Bedrock. For additional access options, contact AWS Sales at https://aws.amazon.com/contact-us/sales-support/
+```
+
+### CLAUDE - 2026-10-28 23:28:43 UTC
+
+Opus 4.8 is blocked. The error was `AccessDeniedException: anthropic.claude-opus-4-8 is not available for this account`.
+
+| Model | Result |
+|---|---|
+| Haiku 4.5 | Works |
+| Sonnet 4.5 | Works |
+| Opus 4.5 | Works |
+| Sonnet 4.6 | Works |
+| Opus 4.8 | Blocked |
+| Sonnet 5.5 | Blocked |
+| Haiku 5.5 | Blocked |
+
+So the cutoff is between 4.6 and 4.8. The untested models in that gap are Opus 4.6 and Opus 4.7. Everything above 4.8 (Sonnet 5, Opus 5, Opus 5.5, Fable 5 and 5.1) is also untested, though it's likely blocked too. I can test Opus 4.6 and 4.7 to pin down the exact line.
+
+### YOU - 2026-10-28 23:28:46 UTC
+
+Test invoking Claude Opus 4.7 on Bedrock
+
+### COMMAND / TOOL CALL (Bash) - 2026-10-28 23:28:48 UTC
+
+```bash
+cd /tmp && aws bedrock-runtime converse --region us-east-1 --model-id us.anthropic.claude-opus-4-7 --messages '[{"role":"user","content":[{"text":"Reply with the single word: pong"}]}]' --inference-config '{"maxTokens":20}' --query '{text:output.message.content[0].text,stop:stopReason,usage:usage}' 2>&1
+```
+
+### OUTPUT - 2026-10-28 23:28:49 UTC
+
+```text
+Exit code 254
+
+aws: [ERROR]: An error occurred (AccessDeniedException) when calling the Converse operation: anthropic.claude-opus-4-7 is not available for this account. You can explore other available models on Amazon Bedrock. For additional access options, contact AWS Sales at https://aws.amazon.com/contact-us/sales-support/
+```
+
+### CLAUDE - 2026-10-28 23:28:51 UTC
+
+Opus 4.7 is blocked too. The error was `AccessDeniedException: anthropic.claude-opus-4-7 is not available for this account`.
+
+| Model | Result |
+|---|---|
+| Haiku 4.5 | Works |
+| Sonnet 4.5 | Works |
+| Opus 4.5 | Works |
+| Sonnet 4.6 | Works |
+| Opus 4.7 | Blocked |
+| Opus 4.8 | Blocked |
+| Sonnet 5.5 | Blocked |
+| Haiku 5.5 | Blocked |
+
+The cutoff is now between Sonnet 4.6 (works) and Opus 4.7 (blocked). Opus 4.6 is the one model left in that gap. The 5.x models other than Sonnet 5.5 and Haiku 5.5 are still untested. I can test Opus 4.6 to finish narrowing it down.
+
+### YOU - 2026-10-28 23:28:55 UTC
+
+Test invoking Claude Opus 4.6 on Bedrock
+
+### COMMAND / TOOL CALL (Bash) - 2026-10-28 23:28:56 UTC
+
+```bash
+cd /tmp && aws bedrock-runtime converse --region us-east-1 --model-id us.anthropic.claude-opus-4-6-v1 --messages '[{"role":"user","content":[{"text":"Reply with the single word: pong"}]}]' --inference-config '{"maxTokens":20}' --query '{text:output.message.content[0].text,stop:stopReason,usage:usage}' 2>&1
+```
+
+### OUTPUT - 2026-10-28 23:28:59 UTC
+
+```text
+{
+    "text": "pong",
+    "stop": "end_turn",
+    "usage": {
+        "inputTokens": 15,
+        "outputTokens": 5,
+        "totalTokens": 20,
+        "cacheReadInputTokens": 0,
+        "cacheWriteInputTokens": 0
+    }
+}
+Shell cwd was reset to /Users/Twolliston/Documents/TheoWAF/seir-foundations
+```
+
+### CLAUDE - 2026-10-28 23:29:02 UTC
+
+Opus 4.6 works on Bedrock. The call to `us.anthropic.claude-opus-4-6-v1` in `us-east-1` returned `pong` (15 input tokens, 5 output).
+
+| Model | Result |
+|---|---|
+| Haiku 4.5 | Works |
+| Sonnet 4.5 | Works |
+| Opus 4.5 | Works |
+| Sonnet 4.6 | Works |
+| Opus 4.6 | Works |
+| Opus 4.7 | Blocked |
+| Opus 4.8 | Blocked |
+| Sonnet 5.5 | Blocked |
+| Haiku 5.5 | Blocked |
+
+So every Anthropic model up to 4.6 works, and everything from 4.7 up that I tested is blocked. Opus 4.1 is the only older model I haven't tried.
+
 
 Where the AI was wrong, vague, or out of date:
 (at least one example, and how you found out)
+
+N/A
+
 ```
 
 > 🔒 **Never paste private keys (`.pem` contents), AWS access keys, passwords, or tokens into an AI prompt.**
 
 ---
 
-## 6. Required — `spotter_YourNameHere.txt`
+## 6. Required — `spotter_koffi_aleki.txt` (`spotter did not produce upon request`)
 
 This file has **two halves**: one about your spotter, and one about the person you spot for. They are cross-checked: what you write about your spotter must match what your spotter writes in **their** file about you.
 
@@ -238,6 +783,8 @@ I am the spotter for = ?   (the person YOU spot)
 
 Be specific. Ask your spotter directly — these are **their** lessons, not yours.
 
+`No feedback from spotter`
+
 - ✅ "Learned that return code 4 means the account was not found, and the program does not crash."
 - ❌ "Learned a lot about EC2."
 
@@ -255,6 +802,8 @@ Each screenshot must also show the **ID line** from Section 3.2. Use a **lab-run
 
 **Use your own transaction IDs.** Every `TXN` you post must start with your initials, for example `TXN-JD-0001` for Jane Doe. Do not copy the IDs in the examples below.
 
+Screenshot as Screenshot as [`payment-post`](screenshots/step3-payment-post.png).
+
 ### 7.1 Find your customers
 
 ```bash
@@ -262,6 +811,13 @@ cat data/accounts.dat
 ```
 
 How many accounts are there? Write down every account ID.
+
+```text
+100001Alice Johnson                 ACTIVE  000000275936USD
+100002Robert Smith                  ACTIVE  000000127165USD
+100003Maria Garcia                  ACTIVE  000000606698USD
+```
+
 
 ### 7.2 Trigger every return code on purpose
 
@@ -290,9 +846,17 @@ cut -c45-56 data/accounts.dat    # balance (implied decimal!)
 cut -c57-59 data/accounts.dat    # currency
 ```
 
-Screenshot as `cobol_ledger_decode.jpg`.
+```text
+Columns  1-6   account id       PIC X(6)
+Columns  7-36  customer name    PIC X(30)
+Columns 37-44  status           PIC X(8)
+Columns 45-56  balance          PIC 9(10)V99   (implied decimal)
+Columns 57-59  currency         PIC X(3)
+```
+Screenshot as [`decode-fixed-with-ledger`](screenshots/decode-fixed-width-ledger.jpg)
 
-### 7.4 Write it up (add a "COBOL practice" section to `lab1_notes.md`)
+
+### 7.4 Write it up (add a "COBOL practice" section to `lab1_notes.md`)(https://github.com/Twolliston-CPG/seir-foundations/blob/main/module1/lesson1_ec2/LAB1_NOTES.md)
 
 - Which run (and Instance ID) you used.
 - For each return code: the command you ran, the **exact** output lines (copy-paste them, including `ERROR=` or `STATUS=` / `REASON=`), and what the code means.
