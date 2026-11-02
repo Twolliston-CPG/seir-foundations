@@ -2,6 +2,34 @@
 
 Run all commands from `~/Documents/TheoWAF/seir-foundations`
 
+---
+
+## Starting with a New Repo
+
+Any time you want to work on a repo that belongs to someone else, follow these steps first:
+
+**Step A — Fork on GitHub (browser)**
+1. Go to the original repo on GitHub, e.g. `https://github.com/<original-owner>/<repo-name>`
+2. Click the **Fork** button (top right)
+3. Select your account (`Twolliston-CPG`) as the destination
+4. GitHub creates your own copy at `https://github.com/Twolliston-CPG/<repo-name>`
+
+**Step B — Clone your fork to your local machine (terminal)**
+```bash
+git clone https://github.com/Twolliston-CPG/<repo-name>.git
+cd <repo-name>
+```
+
+**Step C — Add the original repo as upstream (terminal, one-time)**
+```bash
+git remote add upstream https://github.com/<original-owner>/<repo-name>.git
+git remote -v    # verify both origin and upstream are listed
+```
+
+Then use the two workflows below. The URLs are the only things that change between repos.
+
+---
+
 There are two distinct workflows:
 
 | Workflow | When to use |
