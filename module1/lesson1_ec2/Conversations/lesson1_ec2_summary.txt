@@ -1,0 +1,232 @@
+LESSON 1 (EC2): FULL SUMMARY OF CONVERSATION.MD
+===============================================
+
+A report on what Conversations/conversation.md covers, written on 2026-11-01 after reading the whole file and
+checking it against the raw session logs. The verbatim, redacted transcript is in lesson1_ec2_transcript.md
+(and .txt) in this same folder.
+
+1. WHAT CONVERSATION.MD IS
+--------------------------
+
+  Item  |  Detail
+  File  |  module1/lesson1_ec2/Conversations/conversation.md
+  Size  |  14,755 bytes, 331 lines, last modified Oct 30
+  Git  |  Committed as "Added a conversation.dm file for Module1 Lesson1 to repo"
+  Purpose  |  A written record for peer review, organised by topic instead of as a chat log
+  Accuracy note (its own words)  |  "a summary of the session, not a verbatim transcript"; commands were run either by Claude from your Mac or by you on the EC2 instance, and each section says which
+  Anonymisation  |  The AWS account ID, public hostnames and public IPs are replaced with placeholders such as <instance-id>
+  Lab  |  The Balerica Legacy Bank lab (a COBOL bank app behind a Python web API started with uvicorn) on an EC2 instance
+
+It was produced from one working session (Oct 28 to Oct 30). Your prompt on Oct 30 was: "For lesson1_Ec2 can you
+create all the conversation we had and place them in a conversation.md file. This is for peer review, so make sure you
+it is easy to read and follow." (quoted exactly, typo included)
+
+2. COVERAGE AT A GLANCE
+-----------------------
+
+  #  |  Topic  |  Who ran it  |  Outcome
+  1  |  Fixing menu.sh  |  Claude read the script; bash -n syntax check only  |  Fixed three problems; not run on EC2 by Claude; left uncommitted at your request
+  2  |  Checking Bedrock access for IAM user iamadmin  |  Claude, from its own CLI session  |  IAM-wise yes; no SCPs apply
+  3  |  Testing which Claude models work  |  Claude, with the Converse API  |  5 models work, 5 blocked at the account level
+  4  |  Starting the API with model ID and region  |  You  |  Variables must be set when the server starts, not in curl
+  5  |  Why /ask stayed offline  |  Claude diagnosed and fixed; you verified  |  Missing instance profile was the real cause; fixed
+  6  |  Same problem on a new instance  |  Claude  |  Attached the same profile to the new instance
+  7  |  Triggering COBOL return codes 8 and 12  |  You, on EC2; Claude only read the repo  |  8 and 12 both triggered
+  8  |  Reading the fixed-width ledger with cut  |  You  |  Decoded the 59-character records and the balance field
+  9  |  Cloning the homework repo onto EC2  |  You  |  Procedure and caveats listed
+  10  |  Everything that changed in AWS, plus lessons  |  n/a  |  Five resources created or attached; five lessons
+
+3. SECTION BY SECTION
+---------------------
+
+3.1 Fixing menu.sh
+- Symptom: running ./menu.sh on EC2 gave line 32: 'COMMANDS[15]': not a valid identifier and
+  line 51: syntax error near unexpected token ')'.
+- Causes: the value of COMMANDS[15] was in double quotes but contained more double quotes and ran across
+  several lines; lines 38 to 44 were a leftover if ... fi" block that spilled outside the string; and the EC2
+  metadata URLs were truncated (http://169.254.169 instead of the full path).
+- Fix: entry 14 lost its embedded newline; entry 15 became a single-quoted one-liner returning the public IPv4
+  using IMDSv2 (the token-based metadata service); a new entry 16 returns the public DNS name from
+  meta-data/public-hostname. Checked with bash -n menu.sh.
+- Git: left uncommitted at your request. menu.sh had been staged in its broken form, so it needed
+  git add again before committing.
+
+3.2 Checking Bedrock access
+- Question: does IAM user iamadmin have access to Bedrock?
+- Claude checked from a different IAM user (AWSCLI): AdministratorAccess attached directly (no groups), no
+  permissions boundary, the policy simulator allows bedrock:InvokeModel, and the account is not in an
+  Organization so no SCPs apply.
+- Conclusion: IAM is fine. A separate account-level issue (which models are enabled) came next.
+
+3.3 Which Claude models work
+Claude listed about 110 Bedrock models in us-east-1, then invoked each with the Converse API
+(aws bedrock-runtime converse ... --messages ... "Reply with the single word: pong").
+
+  Result  |  Models
+  Works  |  Haiku 4.5, Sonnet 4.5, Opus 4.5, Sonnet 4.6, Opus 4.6
+  Blocked  |  Opus 4.7, Opus 4.8, Opus 5.5, Sonnet 5.5, Haiku 5.5
+  Not tested  |  Sonnet 5, Opus 5, Fable 5 and 5.1
+
+Blocked models returned AccessDeniedException: ... is not available for this account. That is an account-level
+restriction, not IAM, so no policy can fix it. Newer models need an inference-profile ID (prefix us. or
+global.); the one used throughout is us.anthropic.claude-sonnet-4-6, found with aws bedrock
+list-inference-profiles.
+
+3.4 Starting the API
+Model ID and region are read from environment variables when the server starts. Putting model_id and region in
+the curl JSON body does nothing (you tried it). The working form:
+
+    BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-6 AWS_REGION=us-east-1 \
+      uvicorn app.main:app --host 0.0.0.0 --port 8000
+
+You test it from a second terminal with curl -X POST http://127.0.0.1:8000/ask. The response's source field
+tells you where an answer came from: "offline-knowledge-base" means the app did not call Bedrock.
+
+3.5 Why /ask stayed offline
+- Symptom: every response said offline-knowledge-base, even with the variables set.
+- The app's rule: Bedrock answers only if an IAM role is attached to the instance, AWS_REGION is right, and
+  BEDROCK_MODEL_ID is a real inference-profile ID.
+- Finding: aws ec2 describe-instances showed the instance had no IAM instance profile, so no credentials,
+  so a silent fall-back to offline. Claude could not test from inside the instance (no SSM agent, no SSH from its
+  side), so the diagnosis came from AWS-side checks.
+- Fix (by Claude, with your approval): six steps, listed in the AWS changes table below.
+- Verification (by you, on the instance): aws sts get-caller-identity showed the assumed role, and the
+  Converse call returned pong in about 690 ms. One early attempt failed from a copy/paste slip (a stray quote and a
+  second command pasted into it); it was cancelled and was not an AWS error.
+- Honest caveat in the file: it says the missing profile was the real cause, but "I don't know whether the earlier
+  restarts had the variables set, so I can't say how much they contributed."
+- Rollback listed: disassociate-iam-instance-profile, remove-role-from-instance-profile,
+  delete-instance-profile, delete-role-policy, delete-role.
+
+3.6 Same problem on a new instance
+A freshly launched instance gave NoCredentials: Unable to locate credentials. Instance profiles are not
+automatic. Claude found the new instance, confirmed it had no profile and that the profile still held the role,
+then ran aws ec2 associate-iam-instance-profile. Tip recorded: at launch, pick the profile under
+*Advanced details, IAM instance profile*.
+
+3.7 COBOL return codes 8 and 12
+You asked Claude to read the instructor's repo (BalericaAI/SEIR-Foundations). Claude cloned it to a throw-away
+folder under /tmp and only read it; it ran none of its code.
+
+  Code  |  Meaning
+  0  |  Success
+  4  |  Warning (account not found)
+  8  |  Business rejection (account not ACTIVE, zero amount, insufficient funds)
+  12  |  Environment failure (missing or unwritable file, malformed arguments)
+
+- Code 8: run from /opt/balerica-bank, payment_post ... 0 ... (zero amount) or a huge amount (insufficient
+  funds), or account_lookup with no argument. A non-ACTIVE account also gives 8, but only if you hand-edit
+  data/accounts.dat (status is columns 37 to 44).
+- Code 12, first idea failed through the API: running a COBOL program from the wrong folder gives 12 with
+  FILE-STATUS=35 on the command line, but the web app runs it with cwd=BANK_HOME and rewrites accounts.dat
+  before every call, so that route cannot be triggered from the UI.
+- Code 12, what worked: chmod 444 /opt/balerica-bank/data/payments.dat, then a POST /payments at /docs
+  returns HTTP 422 with cobol_return_code: 12 ("CANNOT OPEN data/payments.dat"). Then chmod 644 to restore it,
+  or every later payment fails. The failed attempts also show up as REJECTED rows.
+- An untested idea: sending a six-space account_id and three-space currency was derived from the code, never
+  tested, and would save a row with a blank account ID, so you did not use it.
+
+3.8 Reading the fixed-width ledger
+data/accounts.dat has no delimiters; each record is 59 characters.
+
+  Field  |  Columns  |  Width
+  Account ID  |  1 to 6  |  6
+  Customer name  |  7 to 36  |  30
+  Status  |  37 to 44  |  8
+  Balance  |  45 to 56  |  12 digits, implied decimal
+  Currency  |  57 to 59  |  3
+
+You read it with cut -c1-6, cut -c7-36, cut -c45-56, and grep '^100001' ... | cut -c45-56 | awk '{printf
+"%.2f\n", $1/100}'. The COBOL picture PIC 9(10)V99 means 10 digits, an implied decimal point, then 2 digits, so
+000000475652 decodes to 4756.52. Two mistakes the file flags for reviewers: printf("Account ID" + cut ...) is
+C/Python syntax and does not work in a shell, and grep 'TXN-XX-' data/payments.dat finds nothing because real IDs
+are TXN plus 17 digits with no dashes (TXN-XX- is a placeholder in the lab text).
+
+3.9 Cloning the homework repo onto EC2
+sudo dnf install -y git, then git clone your seir-foundations repo, then ls -la seir-foundations/module1
+and a screenshot named git_clone.jpg. Caveats: the clone works without a login only if the repo is public, and
+only committed and pushed files appear on the instance.
+
+3.10 What changed in AWS, and the lessons
+
+  Resource  |  Name  |  Purpose
+  IAM role  |  balerica-ec2-bedrock-role  |  Lets EC2 instances call Bedrock
+  Inline policy  |  bedrock-invoke  |  InvokeModel and InvokeModelWithResponseStream on Anthropic models and this account's inference profiles
+  Instance profile  |  balerica-ec2-bedrock-profile  |  Wrapper that attaches the role to an instance
+  Association  |  first EC2 instance  |  Fixed /ask falling back to offline
+  Association  |  second EC2 instance  |  Fixed NoCredentials
+
+Not changed, per the file: Bedrock model-access settings, security groups, existing IAM users and policies. Nothing
+was committed to git.
+
+Five lessons recorded:
+1. source: "offline-knowledge-base" means Bedrock was not called; the usual cause is no credentials.
+2. Model ID and region are read at startup, so they belong on the uvicorn command.
+3. Blocked models are an account-level restriction, separate from IAM.
+4. New EC2 instances do not inherit the instance profile; attach it at launch.
+5. To trigger a COBOL return code through the API, work out which step of the code runs and what file or argument
+   it depends on, because the bridge resets some conditions on every call.
+
+4. WHAT CONVERSATION.MD DOES NOT COVER
+--------------------------------------
+
+Found by reading your prompts in the raw sessions (see lesson1_ec2_transcript.md):
+
+Part 1 (the session the file summarises), things it skips or only mentions in passing
+- Early on you asked "where would you commit this fix?" and then declined a commit (the file does mention the fix was
+  left uncommitted).
+- You asked Claude to "enable the Sonnet 4.6 Claude model (Model Access)". Claude replied it was already enabled and
+  that Bedrock has retired the per-model "Model access" page, as most serverless models turn on at first use. This
+  matches the file's "no Bedrock model access settings changed" line.
+- You asked whether sharing a claude.ai conversation link would let others see the conversation. Claude said it had
+  not created or shared any link and could not tell which link you meant.
+- You asked for the conversation.md itself (Oct 30, 17:33).
+- The last prompt in that session, after the file was done, was "How to remove a file from my computer and GitHub
+  that is being tracked." Claude answered with git rm (and the --cached variant) and a commit and push. The repo's
+  git log has a commit "Removed file from path ai_review_transcript_Tim Wolliston.txt"; I did not check whether it
+  came from this answer.
+
+Part 2 (a separate session, Oct 31), not in the file at all
+- You asked how to fix the formatting of the "Lab Run Log (graded table)" section in the lesson README.md, and
+  later said it was fixed (an image was attached, not included in the transcript).
+- You told Claude you commit yourself when ready, then said you like being asked about commits going forward.
+- You asked why iamadmin cannot see Cost & Usage. Claude explained that activating IAM access to billing is a
+  root-only setting, found no root profile configured, and gave manual steps. No AWS change was made by Claude
+  in Part 2. You then wrote "done" and asked for a check of iamadmin's billing permissions.
+- Part 2 also began with a model switch (/model, Sonnet 4.6 saved as the default).
+
+Because the file's "everything that changed in AWS" table only describes Part 1, it should not be read as covering
+Part 2; Part 2 changed nothing in AWS through Claude.
+
+5. HOW WELL THE FILE MATCHES THE RAW SESSIONS
+---------------------------------------------
+
+A light spot-check, searching the redacted transcript for the file's specific claims. It confirms the claims
+appear; it does not prove each one is stated correctly.
+
+  Claim  |  Found in transcript
+  Role balerica-ec2-bedrock-role  |  Yes (15 lines)
+  Instance profile balerica-ec2-bedrock-profile  |  Yes (12)
+  associate-iam-instance-profile used  |  Yes (3)
+  Inline policy bedrock-invoke  |  Yes (4)
+  "not available for this account" errors  |  Yes (13)
+  us.anthropic.claude-sonnet-4-6  |  Yes (25)
+  offline-knowledge-base symptom  |  Yes (14)
+  chmod 444 read-only trick for code 12  |  Yes (3)
+  NoCredentials on the second instance  |  Yes (3)
+  cut -c ledger reading  |  Yes (20)
+  IMDSv2 token in the menu.sh fix  |  Yes (6)
+
+Not checked: the exact model-by-model results in section 3.3, the policy JSON, and the latency figure. The file's
+own caveats (the copy/paste slip, the untested six-space idea, the unknown role of earlier restarts) are reflected
+accurately in this report.
+
+6. FILES IN THIS FOLDER
+-----------------------
+
+  File  |  What it is
+  conversation.md  |  Your original topic-organised summary (unchanged)
+  lesson1_ec2_summary.md / .txt  |  This report
+  lesson1_ec2_transcript.md / .txt  |  Verbatim, redacted transcript of both Lesson 1 sessions
+
+The transcript builder is saved outside this repo at ~/mastery-progress/tools/build_transcript.py.

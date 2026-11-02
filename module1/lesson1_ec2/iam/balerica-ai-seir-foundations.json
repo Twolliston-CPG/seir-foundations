@@ -1,0 +1,86 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+
+    {
+      "Sid": "AmazonBedrock",
+      "Effect": "Allow",
+      "Action": [
+        "bedrock:InvokeModel"
+      ],
+      "Resource": "*"
+    },
+
+    {
+      "Sid": "CloudWatchMetrics",
+      "Effect": "Allow",
+      "Action": [
+        "cloudwatch:GetMetricStatistics",
+        "cloudwatch:ListMetrics"
+      ],
+      "Resource": "*"
+    },
+
+    {
+      "Sid": "CloudWatchLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:DescribeLogGroups",
+        "logs:DescribeLogStreams",
+        "logs:FilterLogEvents",
+        "logs:GetLogEvents"
+      ],
+      "Resource": "*"
+    },
+
+    {
+      "Sid": "CostExplorer",
+      "Effect": "Allow",
+      "Action": [
+        "ce:GetCostAndUsage"
+      ],
+      "Resource": "*"
+    },
+
+    {
+      "Sid": "EC2ReadOnly",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeInstances",
+        "ec2:DescribeVolumes",
+        "ec2:DescribeTags",
+        "ec2:DescribeImages",
+        "ec2:DescribeAvailabilityZones",
+        "ec2:DescribeInstanceTypes"
+      ],
+      "Resource": "*"
+    },
+
+    {
+      "Sid": "SystemsManagerReadOnly",
+      "Effect": "Allow",
+      "Action": [
+        "ssm:DescribeInstanceInformation"
+      ],
+      "Resource": "*"
+    },
+
+    {
+      "Sid": "PricingAPI",
+      "Effect": "Allow",
+      "Action": [
+        "pricing:GetProducts"
+      ],
+      "Resource": "*"
+    },
+
+    {
+      "Sid": "ComputeOptimizerReadOnly",
+      "Effect": "Allow",
+      "Action": [
+        "compute-optimizer:GetEC2InstanceRecommendations"
+      ],
+      "Resource": "*"
+    }
+  ]
+}

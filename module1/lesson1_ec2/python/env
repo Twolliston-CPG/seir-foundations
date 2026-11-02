@@ -1,0 +1,32 @@
+############################################################
+#
+#               BALERICA AI Configuration
+#
+############################################################
+
+# AWS Region
+
+AWS_REGION=us-east-1
+
+
+# ----------------------------------------------------------
+# Student Challenge
+#
+# Replace 4.X with the Foundation Model
+# you enabled inside Amazon Bedrock.
+#
+# AWS Console
+#
+# Amazon Bedrock
+# -> Model Access
+#
+# ----------------------------------------------------------
+
+BEDROCK_MODEL_ID=anthropic.claude-sonnet-4.X
+
+
+# AI Configuration
+
+MAX_TOKENS=1000
+
+TEMPERATURE=0

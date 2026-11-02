@@ -1,264 +1,197 @@
-## SEIR Foundations — Module 1, Lab 0
 
-## EC2 Deployment: Launch, Connect, Observe, Repeat
+# SEIR Foundations — Module 1, Lab 0
+## Your First EC2 Deployment: Launch, Connect, Observe, Repeat
 
-This lab uses the **AWS Management Console** to:
+**Course:** SEIR Foundations  
+**Lab:** Module 1 / Lab 0 — EC2 Basics  
+**Difficulty:** Beginner  
+**Format:** Instructor-led introduction + individual homework  
+**Homework deadline:** **Tuesday, October 20, 2026, at 12:00 PM Central Time**  
+**Reference course:** Stéphane Maarek's AWS Udemy course, used alongside instructor demonstrations
 
-1. Create an EC2 **launch template** with a custom key pair and a custom security group (SSH + HTTP only).
-2. Launch **3 EC2 instances** from that template.
-3. Connect to **2 instances with EC2 Instance Connect** and **1 instance with SSH**.
-4. Show the **SEIR dashboard** (run `seir-dashboard`).
-5. Capture **screenshots** as evidence.
-6. **Terminate** the instances.
-
----
-
-## Naming Conventions
-
-| Resource           | Name                  |
-|--------------------|-----------------------|
-| Key pair           | `lab0-key`            |
-| Security group     | `lab0-sg`             |
-| Launch template    | `lab0-template`       |
-| Instances          | `lab0-ec2-1`, `lab0-ec2-2`, `lab0-ec2-3` |
-| Screenshots folder | `lab0-evidence/`      |
-
-## Prerequisites
-
-- An AWS account with permissions for EC2 (launch templates, instances, key pairs, security groups).
-- A local terminal with an SSH client (macOS/Linux Terminal, or Windows PowerShell / Windows Terminal).
-- Pick one AWS Region (e.g. **us-east-1**) and use it for every step. Check the Region selector at the top-right of the console.
-- The default VPC exists in that Region (it does unless it was deleted).
+> **Chewbacca's message:** RRRRAAAWWWRRR! Launch it. SSH into it. Show your work. Repeat until the cloud stops looking scary.
 
 ---
 
-## Task 1 – Create the EC2 Launch Template
+## 1. Purpose: a first win
 
-### 1.1 Open the launch template wizard
+This is a **basic introductory lab**. The objective is to become comfortable launching an Amazon EC2 instance, connecting to it using SSH, and recognizing that you are operating a real Linux server in AWS.
 
-1. Sign in to the AWS Console and search for **EC2** in the top search bar. Open **EC2**.
-2. In the left navigation pane, under **Instances**, choose **Launch Templates**.
-3. Choose **Create launch template**.
+**We are not evaluating advanced Python, AI, networking, or Linux troubleshooting skills in Lab 0.** We are establishing the deployment and SSH skills that will be used extensively in **Lab 1 and throughout Module 1**.
 
-### 1.2 Template name and description
+You will use an EC2 **launch template** and a provided Bash **User Data** script to display a friendly system dashboard after connecting to the instance.
 
-1. **Launch template name:** `lab0-template`
-2. **Template version description:** `lab0 - SSH and HTTP web server template`
+By the end, you should be able to repeat the process without needing the instructor to perform each click for you.
 
+## 2. Learning outcomes
 
-### 1.3 Application and OS Images (AMI)
+After completing Lab 0, you should be able to:
 
-1. Choose **Quick Start** → **Amazon Linux**.
-2. Select **Amazon Linux 2023 AMI** (Free tier eligible).
+1. Identify the AWS Region in which you are working.
+2. Select an EC2 instance type eligible for your account's current Free Tier or credits.
+3. Find the supplied User Data Bash script in the class repository.
+4. Create, save, and reuse an EC2 launch template.
+5. Launch an Amazon Linux 2023 instance and wait for its status checks.
+6. Find the instance's **public IPv4 address**.
+7. Connect through the EC2 **Connect** button (EC2 Instance Connect, when supported) or an SSH client.
+8. Read the login dashboard and recognize CPU, memory, disk, and uptime information.
+9. Terminate a practice instance and launch a new one from the preserved template.
+10. Document deployments with screenshots and concise explanations in GitHub.
 
-### 1.4 Instance type
+## 3. Prerequisites
 
-1. Choose **t2.micro** or **t3.micro** (whichever is marked *Free tier eligible* in your Region).
+- An AWS account with credits and/or applicable Free Tier eligibility.
+- Permission to launch and terminate EC2 instances and create launch templates.
+- Access to the class GitHub repository.
+- A GitHub repository where you can submit your own homework evidence.
+- An SSH-capable environment or browser access to the EC2 Connect workflow.
+- An AI helper of your choice (Claude Code, Ollama, ChatGPT, etc.) if you need assistance.
 
-### 1.5 Key pair (custom)
+**Costs:** The instructor expects students to have AWS credits for these exercises. Do not panic about ordinary small lab deployments, but **Free Tier eligibility varies by account, region, instance type, and account creation date**. EC2, public IPv4 addresses, storage, and other resources may incur charges. Choose an eligible small instance, avoid unnecessary extras, and **terminate practice instances after each exercise**. A saved launch template itself does not incur EC2 compute charges.
 
-1. Under **Key pair (login)**, choose **Create new key pair**.
-2. **Key pair name:** `lab0-key`
-3. **Key pair type:** `RSA`
-4. **Private key file format:**
-   - `.pem` → for OpenSSH (macOS, Linux, Windows PowerShell)
-   - `.ppk` → only if you will use PuTTY
-5. Choose **Create key pair**. The file `lab0-key.pem` downloads automatically.
-   > ⚠️ This is the **only** time you can download the private key. Store it somewhere safe (e.g. `~/.ssh/lab0-key.pem`).
-6. Confirm `lab0-key` is now selected in the **Key pair name** dropdown.
+## 4. Lab files and references
 
-### 1.6 Network settings – custom security group
+- [Lab 0 runbook](runbook.md) — step-by-step instructor-led procedure.
+- [EC2 User Data script](seir_ec2_userdata.sh) — script to paste into the launch template.
+- [Class GitHub repository](https://github.com/BalericaAI/SEIR-Foundations).
+- [Direct User Data script on GitHub](https://github.com/BalericaAI/SEIR-Foundations/blob/main/module1/lab0_basics/seir_ec2_userdata.sh).
 
-1. **Subnet:** leave as **Don't include in launch template** (the default VPC's subnets auto-assign public IPs).
-2. **Firewall (security groups):** choose **Create security group**.
-3. **Security group name:** `lab0-sg`
-4. **Description:** `lab0 - allow SSH and HTTP inbound`
-5. **VPC:** select the **default VPC**.
-6. **Inbound security group rules** – make sure there are **exactly two** rules (choose **Add security group rule** for the second one, and remove any extras):
-
-   | # | Type | Protocol | Port range | Source type | Source      | Description  |
-   |---|------|----------|-----------|-------------|-------------|--------------|
-   | 1 | SSH  | TCP      | 22        | Custom      | `0.0.0.0/0` | lab0 SSH     |
-   | 2 | HTTP | TCP      | 80        | Custom      | `0.0.0.0/0` | lab0 HTTP    |
-
-7. **Outbound rules:** do not change anything. The default rule (All traffic → `0.0.0.0/0`) is created automatically.
-
-> 💡 If you'd rather build the security group first: go to **EC2 → Network & Security → Security Groups → Create security group**, apply the same settings above, then in the template choose **Select existing security group** → `lab0-sg`.
-
-### 1.7 Storage
-
-1. Leave the default (8 GiB gp3 root volume).
-
-### 1.8 Resource tags (optional but recommended)
-
-1. Expand **Resource tags** → **Add new tag**.
-2. **Key:** `Project` **Value:** `lab0` **Resource types:** Instances, Volumes.
-
-### 1.9 Advanced details
-- Course provides a **User data** script that installs the SEIR dashboard, paste it into **Advanced details → User data** now so every instance has it at boot.
-
-1. Scroll all the way to the bottom and add the contents contained in the file below. Starting with `#!/bin/bash` and ending with `echo 'SEIR dashboard installed.'`
-
-lab0_basics/scripts/seir_ec2_userdata.sh
-
-### 1.10 Create
-
-1. Review the **Summary** panel on the right.
-2. Choose **Create launch template**.
-3. Choose **View launch templates** and confirm `lab0-template` appears.
-
-📸 **Screenshot [`lab0-01-template`](screenshots/lab0-evidence/lab0-01-template.png):** the launch template details page showing the key pair `lab0-key` and security group ID beginning with `sg-`.
-
-📸 **Screenshot [`lab0-02-sg-inbound`](screenshots/lab0-evidence/lab0-02-sg-inbound.png):** **EC2 → Security Groups → `lab0-sg` → Inbound rules** tab showing only the SSH (22) and HTTP (80) rules from `0.0.0.0/0`.
-
-📸 **Screenshot [`lab0-03-sg-outbound`](screenshots/lab0-evidence/lab0-03-sg-outbound.png):** **EC2 → Security Groups → `lab0-sg` → Outbound rules** tab showing only the All Traffic, Protocol (All), and Port Range (All) rules from `0.0.0.0/0`.
-
-
----
-
-## Task 2 – Launch EC2 Instances from the Template three times
-
-1. Go to **EC2 → Instances → Launch Templates**.
-2. Select **`lab0-template`**.
-3. Choose **Actions → Launch instance from template**.
-4. **Source template version:** `1 (Default)`.
-5. In the **Summary** panel, set **Number of instances** to **`3`** or `1` then launch 2 more times
-6. Review the settings – they are inherited from the template (AMI, instance type, `lab0-key`, `lab0-sg`). Do **not** change them.
-7. Choose **Launch instance**.
-8. Choose **View instance or instances**.
-
-### 2.1 Name the instances
-
-1. In **EC2 → Instances**, find the new instances (Name column is blank).
-2. Hover over each **Name** cell, click the ✏️ pencil icon, and enter:
-   - `lab0-ec2-1`
-   - `lab0-ec2-2`
-   - `lab0-ec2-3`
-3. Wait until each instance shows **Instance state: Running** and **Status check: 3/3 checks passed** (refresh with the 🔄 button).
-4. Note the **Public IPv4 address** of each instance.
-
-📸 **Screenshot [`lab0-04-instances-running`](screenshots/lab0-evidence/lab0-04-instances-running.png):** the Instances list showing all three `lab0-ec2-*` instances **Running** with public IPs.
-
----
-
-## Task 3 – Connect to the Instances
-
-### 3.1 EC2 Instance Connect – `lab0-ec2-1`
-
-1. In **EC2 → Instances**, select **`lab0-ec2-1`**.
-2. Choose **Connect** (top of the page).
-3. Select the **EC2 Instance Connect** tab.
-4. **Connection type:** `Connect using EC2 Instance Connect` (public IPv4).
-5. **Username:** `ec2-user` (default for Amazon Linux).
-6. Choose **Connect**. A browser terminal opens in a new tab.
-7. Verify you are connected:
-   ```bash
-   whoami
-   hostname
-   curl -s http://169.254.169.254/latest/meta-data/instance-id 2>/dev/null || ec2-metadata -i
-   ```
-   📸 **Screenshot `lab0-ec2-1.png`:** the Instances showing the SEIR Foundations - Amazon Linux 2023 EC2 User Data
-
-### 3.2 EC2 Instance Connect – `lab0-ec2-2`
-
-Repeat the steps in **3.1** for **`lab0-ec2-2`**.
-
- 📸 **Screenshot `lab0-ec2-2.png`:** the Instances showing the SEIR Foundations - Amazon Linux 2023 EC2 User Data
-
-### 3.3 SSH – `lab0-ec2-3`
-
-1. In **EC2 → Instances**, select **`lab0-ec2-3`** and copy its **Public IPv4 address** (or choose **Connect → SSH client** tab, which shows the exact command).
-2. Open a terminal on your computer and go to the folder containing `lab0-key.pem`.
-3. Restrict the key's permissions (SSH refuses keys that are too open):
-
-   **macOS / Linux**
-   ```bash
-   chmod 400 lab0-key.pem
-   ```
-
-   **Windows PowerShell**
-   ```powershell
-   icacls .\lab0-key.pem /inheritance:r
-   icacls .\lab0-key.pem /grant:r "$($env:USERNAME):(R)"
-   ```
-
-4. Connect (replace `<PUBLIC_IP>`):
-   ```bash
-   ssh -i lab0-key.pem ec2-user@54.83.149.249
-   ```
-5. Type `yes` when prompted to trust the host fingerprint.
-6. Verify:
-   ```bash
-   whoami
-   hostname
-   ```
- 📸 **Screenshot `lab0-ec2-3.png`:** the Instances showing the SEIR Foundations - Amazon Linux 2023 EC2 User Data
-
-### Troubleshooting connections
-
-| Symptom | Fix |
-|---|---|
-| `Connection timed out` | Confirm `lab0-sg` has SSH (22) from `0.0.0.0/0` and the instance has a public IPv4 address. |
-| `Permission denied (publickey)` | Wrong username (use `ec2-user`), wrong key, or key permissions too open (redo the `chmod`/`icacls` step). |
-| EC2 Instance Connect fails | Instance must be **Running** with 3/3 checks passed, have a public IP, and port 22 open. Wait 1–2 minutes after launch and retry. |
-| No public IP | The subnet does not auto-assign public IPs. Re-launch with **Network settings → Advanced network configuration → Auto-assign public IP: Enable**. |
-
----
-
-## Task 4 – Show the SEIR Dashboard
-
-On **each** connected instance (both Instance Connect browser sessions and the SSH session), run:
+Optional local setup:
 
 ```bash
-seir-dashboard
+git clone https://github.com/BalericaAI/SEIR-Foundations.git
+cd SEIR-Foundations/module1/lab0_basics
 ```
 
-- Leave the dashboard output visible on screen for the screenshots in Task 5.
-- If you get `command not found`, the dashboard isn't installed on the AMI. Install it using the script/instructions provided with your course materials (or add that script to the template's **User data** in step 1.9 and relaunch), then run `seir-dashboard` again.
+If you have not cloned the repository, open the direct GitHub script link, choose **Raw**, and copy the entire Bash script into the EC2 launch template's **User data** field. Do not paste a GitHub page URL into User Data; paste the actual script contents.
 
----
+## 5. Instructor-led procedure
 
-## Task 5 – Capture Evidence Screenshots
+Follow [runbook.md](runbook.md) while the instructor demonstrates:
 
-| Instance       | Private IPv4 address  |Connection method |Screenshot |Instance Terminated|
-|----------------|-----------------------|--------------|-----------|----------------|
-| `lab0-ec2-1`   | 172.31.46.71  |EC2 Instance Connect  |screenshots/lab0-evidence/lab0-ec2-1|Yes
-| `lab0-ec2-2`   | 172.31.47.75  |EC2 Instance Connect  |screenshots/lab0-evidence/lab0-ec2-2|Yes
-| `lab0-ec2-3`   | 172.31.37.127 |SSH from local terminal (`lab0-key.pem`) |screenshots/lab0-evidence/lab0-ec2-3|Yes
+1. Sign in to the AWS Console and select the intended Region.
+2. Navigate to **EC2** and create a **launch template** using **Amazon Linux 2023** and an appropriate Free Tier-eligible or credit-covered instance type.
+3. Configure an appropriate key pair and network/security group. Permit SSH (TCP 22) only from a suitable trusted source where practical; do not expose additional ports unnecessarily.
+4. Paste the entire `seir_ec2_userdata.sh` file into **Advanced details → User data** and save the template.
+5. Launch an instance from the saved template.
+6. Wait for the instance to reach **Running** and pass its status checks.
+7. Find and record the instance's public IPv4 address.
+8. Select the instance and click **Connect**. Follow either the browser-based EC2 Instance Connect instructions (if supported) or the **SSH client** instructions shown by AWS.
+9. After login, observe the SEIR system dashboard. If it does not appear automatically, try `seir-dashboard` and consult the runbook.
+10. Take a screenshot and share the initial result in the class Zoom chat.
+11. Terminate the instance when finished, but **keep the launch template** for the homework and subsequent labs.
 
+**SSH reminder:** SSH is the critical skill here. Lab 1 will depend heavily on your ability to connect to Linux servers and work from the terminal.
 
-## Task 6 – Terminate the Instances
+## 6. Homework — three separate EC2 deployments
 
-1. Exit the sessions:
-   - Instance Connect: close the browser tabs (or type `exit`).
-   - SSH: type `exit`.
-2. Go to **EC2 → Instances**.
-3. Select the checkboxes for **`lab0-ec2-1`**, **`lab0-ec2-2`**, and **`lab0-ec2-3`**.
-4. Choose **Instance state → Terminate (delete) instance**.
-5. In the confirmation dialog, choose **Terminate (delete)**.
-6. Refresh until all three show **Instance state: Terminated** (they disappear from the list after about an hour).
+**Due: Tuesday, October 20, 2026, at 12:00 PM Central Time.**
 
-📸 **Screenshot [`lab0-05-terminated`](screenshots/lab0-evidence/lab0-05-terminated.png):** the Instances list showing all three `lab0-ec2-*` instances **Terminated**.
+Independently perform **three separate successful EC2 launches**, preferably reusing your saved launch template. For each deployment:
 
-### 6.1 Optional full cleanup
+1. Launch a new EC2 instance.
+2. Wait until it is ready.
+3. Record its **public IPv4 address**.
+4. Successfully connect through EC2 Instance Connect or SSH.
+5. Show the SEIR dashboard or run `seir-dashboard`.
+6. Capture a screenshot demonstrating your connection and dashboard.
+7. Write a brief explanation of what you did, how you connected, and what the dashboard showed.
+8. Terminate the instance after collecting evidence, unless the instructor specifically directs otherwise.
 
-Do this only if the lab doesn't require you to keep these resources:
+**You must demonstrate three different public IPv4 addresses across the three deployments.** Public IP addresses are assigned by AWS and can sometimes be reused, so do not assume a fresh launch guarantees a unique address. If an address repeats, record that observation and perform another launch until you have three distinct addresses. Do **not** purchase Elastic IP addresses to satisfy this requirement.
 
-1. **Launch template:** EC2 → Launch Templates → select `lab0-template` → **Actions → Delete template**.
-2. **Security group:** EC2 → Security Groups → select `lab0-sg` → **Actions → Delete security groups** (works only after the instances are fully terminated).
-3. **Key pair:** EC2 → Key Pairs → select `lab0-key` → **Actions → Delete**, then delete `lab0-key.pem` from your computer.
+You may run the deployments sequentially. **Three simultaneous running instances are not required.** This reduces unnecessary costs.
 
----
+### Homework evidence table
 
-## Lab0 Completion Checklist
+Fill in this table in your own GitHub submission:
 
-- [x] `lab0-template` created with custom key pair `lab0-key`
-- [x] `lab0-sg` has exactly two inbound rules (SSH 22, HTTP 80 from `0.0.0.0/0`) and the default outbound rule
-- [x] 3 instances launched from `lab0-template`
-- [x] `lab0-ec2-1` and `lab0-ec2-2` connected via EC2 Instance Connect
-- [x] `lab0-ec2-3` connected via SSH with `lab0-key.pem`
-- [x] `seir-dashboard` shown on each instance
-- [x] Screenshots `lab0-01` through `lab0-07` saved in `screenshots/lab0-evidence/`
-- [x] All 3 instances terminated
+| Deployment | Public IPv4 address | Connection method | Screenshot | Instance terminated? |
+|---|---|---|---|---|
+| 1 | `YOUR_IP_1` | EC2 Connect / SSH | `screenshots/deployment-1.png` | Yes / No |
+| 2 | `YOUR_IP_2` | EC2 Connect / SSH | `screenshots/deployment-2.png` | Yes / No |
+| 3 | `YOUR_IP_3` | EC2 Connect / SSH | `screenshots/deployment-3.png` | Yes / No |
 
-> ⚠️ **Security note:** `0.0.0.0/0` on port 22 exposes SSH to the entire internet. It's acceptable for this short-lived lab, but in real environments restrict SSH to your own IP (`My IP`) or use Session Manager.
+**Screenshot guidance:** Capture the SSH terminal and dashboard; include the instance's public IPv4 in your written explanation or an accompanying AWS Console screenshot. A terminal dashboard alone may not display the public IP. Do not expose private keys, passwords, AWS access keys, tokens, or other secrets.
+
+### Suggested GitHub submission structure
+
+```text
+seir-foundations-homework/
+└── module1/
+    └── lab0_basics/
+        ├── README.md
+        └── screenshots/
+            ├── deployment-1.png
+            ├── deployment-2.png
+            └── deployment-3.png
+```
+
+In your submission README, include:
+
+- The completed evidence table with **three distinct public IPv4 addresses**.
+- One short paragraph per deployment describing the launch, SSH connection, and dashboard.
+- What CPU, memory, disk, and uptime tell you about the instance.
+- One thing that became easier after repeating the process.
+- Any errors encountered and how you resolved them.
+- Confirmation that you retained the launch template and cleaned up practice instances.
+
+Commit and push your screenshots and explanation to **your GitHub repository**. Submit the repository link through the instructor's designated submission channel by the deadline. **Posting the first screenshot to Zoom during class does not replace the GitHub homework submission.**
+
+## 7. How to use your AI helper
+
+Your AI assistant may be **Claude Code, Ollama, ChatGPT, or another model**. This README provides the context it needs to help you.
+
+### Instructions for the AI helper
+
+> You are assisting a beginner student in SEIR Foundations Module 1, Lab 0. The goal is for the student to launch an Amazon Linux 2023 EC2 instance using the provided User Data script, connect by SSH or EC2 Instance Connect, inspect the dashboard, and repeat the deployment three times for homework. Prioritize simple explanations and one step at a time. Use `runbook.md` and `seir_ec2_userdata.sh` as the source of truth. Ask what step the student is on, what they expected, and what actually happened. Help diagnose issues without taking over the lab. Never request or reveal AWS credentials, private SSH keys, or secrets. Do not change infrastructure, create billable resources, or terminate instances on the student's behalf without explicit approval. Remind the student to preserve the launch template and terminate unused instances.
+
+### Good questions to ask your AI helper
+
+- "What is the difference between an EC2 instance and an EC2 launch template?"
+- "Where do I paste the Bash User Data script in the EC2 launch template?"
+- "Why do I need to select Amazon Linux 2023 for this lab?"
+- "What does a public IPv4 address mean, and where can I find it?"
+- "Explain the SSH instructions shown on my EC2 Connect screen."
+- "I connected successfully, but the SEIR dashboard did not appear. Help me check it."
+- "What do CPU, memory, disk usage, and uptime mean?"
+- "How do I confirm an EC2 instance has been terminated without deleting my launch template?"
+- "Review my homework README and tell me which required evidence is missing."
+
+**AI is a tutor, not a substitute for your own three deployments.** You must execute the work and verify the results yourself.
+
+## 8. Common issues and first checks
+
+| Symptom | Check first |
+|---|---|
+| Cannot launch instance | AWS Region, permissions, instance type availability, quotas, and account eligibility |
+| Cannot connect over SSH | Instance running/status checks, public IPv4, security group TCP 22 rule, correct key and user (`ec2-user` for Amazon Linux 2023) |
+| EC2 Instance Connect fails | Browser connection support, instance network configuration, security group, and AWS-provided Connect instructions |
+| Dashboard does not display | Verify User Data was pasted as script text; run `seir-dashboard`; check `/var/log/cloud-init-output.log` if needed |
+| Script was added after launch | User Data normally runs on initial launch; use the saved corrected template for a new instance |
+| New instance has the same public IP | AWS may reuse public addresses; launch another instance and record the distinct IPs |
+| Worried about costs | Check AWS credits/Free Tier eligibility, inspect running resources, terminate unused instances, and review AWS Billing/Budgets |
+| GitHub screenshots missing | Ensure image files were added, committed, and pushed, not merely saved locally |
+
+When asking for help, provide: **step number, command/action, expected result, actual result, and a sanitized error message or screenshot**.
+
+## 9. Definition of done
+
+- [ ] I completed the instructor-led EC2 deployment.
+- [ ] I connected to EC2 using the AWS Connect instructions or SSH.
+- [ ] I observed the SEIR dashboard and shared a screenshot in Zoom during class.
+- [ ] I preserved my launch template.
+- [ ] I completed three separate EC2 deployments for homework.
+- [ ] I successfully connected to each of the three instances.
+- [ ] I recorded **three distinct public IPv4 addresses**.
+- [ ] I uploaded three screenshots and explanations to my GitHub repository.
+- [ ] I submitted my repository link by **Tuesday, October 20, 2026, noon Central Time**.
+- [ ] I terminated unused EC2 instances and checked for leftover billable resources.
+
+## 10. Why repetition matters
+
+The objective is **confidence through repetition**. The first deployment may feel unfamiliar. The second should feel easier. By the third, the workflow should be recognizable and repeatable.
+
+In Lab 1, you will use SSH repeatedly to edit files, run programs, inspect logs, and troubleshoot your own systems. **Lab 0 removes the uncertainty around connecting to EC2 before that work begins.**
+
+> **Chewbacca's final assessment:** RRRRAAAWWWRRR! Three launches. Three SSH sessions. Three public IPs. Three screenshots. The Force is strong with students who actually do the homework.
