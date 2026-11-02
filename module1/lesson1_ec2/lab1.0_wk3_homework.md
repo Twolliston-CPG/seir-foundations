@@ -71,7 +71,7 @@ seir-foundations-homework/
             └── BAM_2.3.jpg      (extra credit)
 ```
 
-Replace `YourNameHere` with your name. Use these file names exactly — they are how your work gets checked.
+Replace `Tim Wolliston` with your name. Use these file names exactly — they are how your work gets checked.
 
 ---
 
@@ -92,6 +92,11 @@ Right **before** you start uvicorn in Step 4, run the **ID line**. It proves who
 ```bash
 whoami && TZ='America/Chicago' date && ec2-metadata -i && uptime -s
 ```
+Optional alternative:
+
+```bash
+ clear && seir-dashboard && whoami && timedatectl show -p Timezone --value && date && ec2-metadata -i && curl -s http://checkip.amazonaws.com && uptime -p && TZ=UTC who -b 
+ ```
 
 - Use your own zone: `America/New_York`, `America/Chicago`, `America/Denver`, `America/Los_Angeles`, `Europe/London`, etc. (Amazon Linux shows UTC by default.)
 - `ec2-metadata -i` prints the **Instance ID**. If the command is missing, run `sudo dnf install -y ec2-utils` first.
@@ -105,7 +110,14 @@ Then start the server:
 uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-Take the screenshot when you see `Application startup complete.` It must show, in one image:
+Optional: 
+Use below option only if you've made the necessary configuration changes to your aws account allowing for AWS Bedrock to be reached.
+
+```bash
+BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-6 AWS_REGION=us-east-1 uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+Take the screenshot when you see [`Application startup complete.`](screenshots/application_startup_complete.jpg) It must show, in one image:
 
 1. The full ID line output: `ec2-user`, the local date and time, the Instance ID, and the boot time
 2. The uvicorn startup lines, including `Application startup complete.`
@@ -126,7 +138,7 @@ Save as `screenshots/lab1_run1.jpg` through `screenshots/lab1_run7.jpg`.
 
 The daily limit applies **only** to the seven `lab1_run` screenshots. COBOL practice, git clone, quiz, and BAM screenshots do not count toward it.
 
-### 3.4 Evidence table (put this in your `lesson1_ec2/README.md`)
+### 3.4 Evidence table (put this in your [`lesson1_ec2/README.md`](module1/lesson1_ec2/readme.md))
 
 Find the **Public IPv4 DNS** and **Instance ID** in **EC2 → Instances → (your instance) → Details**.
 
@@ -139,12 +151,12 @@ Find the **Public IPv4 DNS** and **Instance ID** in **EC2 → Instances → (you
 | 4 |2026-11-01 |America/New_York |i-035d7e71aca00a5a0 |2026-11-01 20:49 |ec2-100-55-46-159.compute-1.amazonaws.com | [lab1_run4.jpg](screenshots/lab1_run4.jpg) | |
 | 5 | 2026-11-01|America/New_York |i-0f8eb643ba9d52a6b |2026-11-01 21:39 |ec2-107-21-165-40.compute-1.amazonaws.com | [lab1_run5.jpg](screenshots/lab1_run5.jpg) | |
 | 6 |2026-11-01 |America/New_York |i-02ce7e8c9b2b58d5b |2026-11-01 22:10 |ec2-18-215-152-252.compute-1.amazonaws.com | [lab1_run6.jpg](screenshots/lab1_run6.jpg) | |
-| 7 | 2026-11-02|America/New_York  |i-0ec5903c2839f1edf |2026-11-02 17:15  | | [lab1_run7.jpg](screenshots/lab1_run7.jpg) | |
+| 7 | 2026-11-02|America/New_York |i-0ec5903c2839f1edf |2026-11-02 17:15  | | [lab1_run7.jpg](screenshots/lab1_run7.jpg) | |
 
 
 (Row 1 is an example — replace it with your real values. The Instance ID and boot time must match your screenshot exactly. Boot time is in UTC, so in the evening in the US it may already show the next calendar day — that is expected.)
 
-### 3.5 Personal notes — `lab1_notes.md`
+### 3.5 Personal notes — [`lab1_notes.md`](module1/lesson1_ec2/LAB1_NOTES.md)
 
 For **each run**, start with the run number and Instance ID, then write at least **3 sentences**:
 
@@ -152,7 +164,7 @@ For **each run**, start with the run number and Instance ID, then write at least
 - What error (if any) did you hit, and what fixed it?
 - What did you understand this time that you did not understand before?
 
-Also paste **at least one exact output line from that run** that only your run would have, such as the PID from `Started server process [12345]`, or an error message you actually got.
+Also paste **at least one exact output line from that run** that only your run would have, such as the PID from [`Started server process [12345]`](screenshots/step4-uvicorn-running.png), or an error message you actually got.
 
 End the file with a **"Mistakes I made"** list (at least 3 items) and a **"Commands I now know by heart"** list.
 
@@ -302,7 +314,7 @@ git clone https://github.com/YOUR-GITHUB-USERNAME/seir-foundations-homework.git
 ls seir-foundations-homework/module1
 ```
 
-Screenshot as `git_clone.jpg`.
+Screenshot as [`git_clone.jpg`](screenshots/git_clone.jpg).
 
 - Your homework repo must be **public** for this to work without logging in.
 - **Clone only. Do not push from the EC2 instance**, and do not put a GitHub token or password on the server for this assignment.

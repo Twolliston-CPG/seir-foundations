@@ -362,7 +362,8 @@ Start the API server:
 uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-** -or- **
+Optional: 
+Use below option only if you've made the necessary configuration changes to your aws account allowing for AWS Bedrock to be reached.
 
 ```bash
 BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-6 AWS_REGION=us-east-1 uvicorn app.main:app --host 0.0.0.0 --port 8000
