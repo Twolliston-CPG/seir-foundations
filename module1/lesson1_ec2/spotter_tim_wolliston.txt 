@@ -1,0 +1,18 @@
+Things I learned from research:
+1) How to create my own script to run frequently used commands e.g. menu.sh & legacy_bank_app.sh.
+2) I also learned who to leverage ai to teach me thing I don't know or understand.
+3) I also learned how to ask ai to export conversation history as well as transcripts.
+4) I learned how to access AWS Bedrock anthropic models from a linux EC2 instance.
+5) I learned how to have ai review my github pushes ensuring I have a clean tree and no unnecessary branches exists.
+
+---
+`spotter = Koffi Aleki`
+---
+
+Things that Tim learned from research:
+1) How to get more infomation from Tim ID line:
+    uptime -s prints the boot time, and uptime -p only says how long the machine has been up.
+2) FILE-STATUS=35 means “file not found”, usually because you ran the program from the wrong folder.
+3) A golden AMI freezes the whole disk, including stale data like the source instance’s hostname page.
+4) Errno 98 address already in use means another process already holds the port; find it with ss -ltnp.
+5) If an AccessDenied message says “not authorized”, IAM refused; if it says “not available for this account”, the account lacks access to that model.

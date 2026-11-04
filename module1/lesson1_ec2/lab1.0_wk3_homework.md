@@ -151,7 +151,7 @@ Find the **Public IPv4 DNS** and **Instance ID** in **EC2 → Instances → (you
 | 4 |2026-11-01 |America/New_York |i-035d7e71aca00a5a0 |2026-11-01 20:49 |ec2-100-55-46-159.compute-1.amazonaws.com | [lab1_run4.jpg](screenshots/lab1_run4.jpg) | |
 | 5 | 2026-11-01|America/New_York |i-0f8eb643ba9d52a6b |2026-11-01 21:39 |ec2-107-21-165-40.compute-1.amazonaws.com | [lab1_run5.jpg](screenshots/lab1_run5.jpg) | |
 | 6 |2026-11-01 |America/New_York |i-02ce7e8c9b2b58d5b |2026-11-01 22:10 |ec2-18-215-152-252.compute-1.amazonaws.com | [lab1_run6.jpg](screenshots/lab1_run6.jpg) | |
-| 7 | 2026-11-02|America/New_York |i-0ec5903c2839f1edf |2026-11-02 17:15  | | [lab1_run7.jpg](screenshots/lab1_run7.jpg) | |
+| 7 | 2026-11-02|America/New_York |i-0ec5903c2839f1edf |2026-11-02 17:15 |ec2-34-207-110-253.compute-1.amazonaws.com  | [lab1_run7.jpg](screenshots/lab1_run7.jpg) | |
 
 
 (Row 1 is an example — replace it with your real values. The Instance ID and boot time must match your screenshot exactly. Boot time is in UTC, so in the evening in the US it may already show the next calendar day — that is expected.)
@@ -161,8 +161,11 @@ Find the **Public IPv4 DNS** and **Instance ID** in **EC2 → Instances → (you
 For **each run**, start with the run number and Instance ID, then write at least **3 sentences**:
 
 - What went differently this time?
+  AWS Bedrock was not available in subsequent instance.
 - What error (if any) did you hit, and what fixed it?
+  Answer form step 8 was not from AI
 - What did you understand this time that you did not understand before?
+  I have the assign an profile having permissions when starting ec2 instances to access AWS bedrock anthroptic models
 
 Also paste **at least one exact output line from that run** that only your run would have, such as the PID from [`Started server process [12345]`](screenshots/step4-uvicorn-running.png), or an error message you actually got.
 
@@ -186,8 +189,11 @@ Review the Lesson 1 runbook with the AI of your choice (Claude, ChatGPT, Gemini,
 
 **You must submit the real conversation**, in one of two ways:
 
-- A **share link** to the conversation (most AI apps have a "Share" button), pasted at the top of the file, **or**
-- An **exported or copy-pasted transcript**, uploaded as `ai_review_transcript_tim_wollitston.txt`(https://github.com/Twolliston-CPG/seir-foundations/blob/main/module1/lesson1_ec2/ai_review_transcript_tim_wolliston.txt) (or `.pdf`).
+- A **share link** to the conversation 
+
+[`ai_review_tim_wolliston.txt]`(https://github.com/Twolliston-CPG/seir-foundations/blob/main/module1/lesson1_ec2/ai_review_tim_wolliston.txt) 
+
+- An **exported or copy-pasted transcript**, uploaded as [`ai_review_transcript_tim_wollitston.txt`](https://github.com/Twolliston-CPG/seir-foundations/blob/main/module1/lesson1_ec2/ai_review_transcript_tim_wolliston.txt) 
 
 Your summary must match the conversation. The most important part, and what is graded most heavily, is **how you checked** each answer.
 
@@ -762,21 +768,24 @@ N/A
 This file has **two halves**: one about your spotter, and one about the person you spot for. They are cross-checked: what you write about your spotter must match what your spotter writes in **their** file about you.
 
 ```
-Spotter = ?   (the person who spots YOU)
-5 things my spotter learned while working on the lab / homework:
-1. ?
-2. ?
-3. ?
-4. ?
-5. ?
+Things I learned from research:
+1) How to create my own script to run frequently used commands e.g. menu.sh & legacy_bank_app.sh.
+2) I also learned who to leverage ai to teach me thing I don't know or understand.
+3) I also learned how to ask ai to export conversation history as well as transcripts.
+4) I learned how to access AWS Bedrock anthropic models from a linux EC2 instance.
+5) I learned how to have ai review my github pushes ensuring I have a clean tree and no unnecessary branches exists.
 
-I am the spotter for = ?   (the person YOU spot)
-5 things I learned that I shared with them:
-1. ?
-2. ?
-3. ?
-4. ?
-5. ?
+---
+`spotter = Koffi Aleki`
+---
+
+Things that Tim learned from research:
+1) How to get more infomation from Tim ID line:
+    uptime -s prints the boot time, and uptime -p only says how long the machine has been up.
+2) FILE-STATUS=35 means “file not found”, usually because you ran the program from the wrong folder.
+3) A golden AMI freezes the whole disk, including stale data like the source instance’s hostname page.
+4) Errno 98 address already in use means another process already holds the port; find it with ss -ltnp.
+5) If an AccessDenied message says “not authorized”, IAM refused; if it says “not available for this account”, the account lacks access to that model.
 ```
 
 **How the cross-check works:** if Jane is Alex's spotter, then the 5 points in Alex's first half (about Jane) should match the 5 points in Jane's second half (shared with Alex). Agree on your 5 points together, in your own words. They do not need to be word-for-word, but they must be the same 5 lessons.
@@ -853,7 +862,7 @@ Columns 37-44  status           PIC X(8)
 Columns 45-56  balance          PIC 9(10)V99   (implied decimal)
 Columns 57-59  currency         PIC X(3)
 ```
-Screenshot as [`decode-fixed-with-ledger`](screenshots/decode-fixed-width-ledger.jpg)
+Screenshot as [`decode-fixed-with-ledger`](screenshots/cobol_ledger_decode.jpg)
 
 
 ### 7.4 Write it up (add a "COBOL practice" section to `lab1_notes.md`)(https://github.com/Twolliston-CPG/seir-foundations/blob/main/module1/lesson1_ec2/LAB1_NOTES.md)
@@ -873,8 +882,8 @@ On any lab-run instance:
 
 ```bash
 cd ~
-whoami && TZ='Your/Zone' date && ec2-metadata -i && uptime -s
-git clone https://github.com/YOUR-GITHUB-USERNAME/seir-foundations-homework.git
+clear && seir-dashboard && whoami && timedatectl show -p Timezone --value && date && ec2-metadata -i && curl -s http://checkip.amazonaws.com && uptime -p && TZ=UTC who -b
+git clone https://github.com/Twolliston-CPG/seir-foundations.git
 ls seir-foundations-homework/module1
 ```
 
@@ -936,6 +945,8 @@ Research points:
 - Strengths and weaknesses of PostgreSQL.
 - **Lab hook:** Balerica's system of record is SQLite (`data/bank.db`). Why might a teaching lab choose SQLite, and why would a real bank probably not?
 
+A database is a structured system for storing, organizing, and retrieving data, and nearly every application needs one because programs must persist information (user accounts, transactions, inventory, etc.) beyond a single running session, in a way that can be queried, updated, and shared reliably. Databases fall into several types: relational (tabular, SQL-based, like PostgreSQL or MySQL), key-value (simple id-to-value lookups, like DynamoDB or Redis), document (JSON-like flexible records, like MongoDB or DocumentDB), and graph (nodes and edges for relationship-heavy data, like Neo4j or Neptune), and choosing between them depends on how structured your data is, whether relationships between entities matter, how much consistency vs. scalability you need, and how your access patterns look (simple lookups vs. complex joins). SQL (Structured Query Language) databases are relational, enforce a fixed schema, and guarantee ACID consistency, while NoSQL databases are the broader “non-relational” category (key-value, document, graph, etc.) that trade strict consistency for flexibility and horizontal scale; in the cloud this split shows up as managed relational services like Amazon RDS and Aurora versus managed non-relational services like DynamoDB. Among relational engines, SQLite, Microsoft SQL Server, MariaDB/MySQL, and PostgreSQL are the de facto standards: SQLite is a lightweight, serverless, file-based engine ideal for embedded use, testing, and small apps; SQL Server is Microsoft’s enterprise-grade commercial engine tightly integrated with the Windows/.NET ecosystem; MariaDB/MySQL (MariaDB being a community-driven fork of MySQL) are popular open-source engines known for speed and simplicity in web applications; and PostgreSQL is a fully-featured open-source engine praised for standards compliance, advanced features (JSON support, full-text search, extensibility, strong concurrency via MVCC), and reliability, though it can be more resource-intensive and has a steeper tuning/configuration learning curve than MySQL for simple workloads. Applying this to the lab: a teaching lab like Balerica’s would reasonably use SQLite for its data/bank.db system of record because it requires no separate server process, is trivial to set up, version, and reset, and keeps the focus on application logic rather than database administration — but a real bank would almost certainly avoid SQLite because it lacks the concurrent write performance, network access, user/role security model, replication, and enterprise-grade durability guarantees (and auditability) that a production financial system needs, making something like PostgreSQL, SQL Server, or a managed cloud relational service a far more appropriate choice.
+
 ### Topic 2 — COBOL basics
 
 | Read | Watch |
@@ -951,6 +962,19 @@ Research points:
 - What is the average age of COBOL engineers, and why does it matter?
 - How much effort would replacing COBOL take, and why have so many replacement projects struggled?
 - **Lab hook:** In `payments.dat`, 125.50 is stored as `000000012550`. Why would a 1959 business language store money with an *implied* decimal instead of a decimal point?
+
+COBOL (Common Business-Oriented Language) was created in 1959–1960 by a committee under CODASYL (the Conference on Data Systems Languages), sponsored by the U.S. Department of Defense and shaped heavily by computer scientist Grace Hopper’s earlier FLOW-MATIC language, with the explicit goal of giving businesses a portable, English-like language for data processing across different manufacturers’ machines. It was adopted early and heavily by mainframe vendors (IBM, RCA, Sperry Rand, Honeywell, etc.) and by government and financial institutions because it let them write transaction and batch-processing programs once and run them on multiple hardware platforms, which is how it became deeply embedded in banking, insurance, retail, and federal/state government systems (IRS, Social Security, VA, DHS, HHS, state unemployment systems) by the 1970s–80s. COBOL is still astonishingly prevalent today — estimates put total existing COBOL code at over 200–220 billion lines, and it’s reported to still process roughly 95% of ATM card swipes and the large majority of in-person financial transactions, with some estimates citing around $3 trillion in daily transactions flowing through COBOL-based banking systems (a figure that is widely repeated but also debated as hard to verify precisely). This matters because COBOL programmers are, on average, older than the general software workforce — commonly cited as being in their 50s to 60s, with many already retired or near retirement — meaning the institutional knowledge needed to safely maintain these systems is shrinking faster than new COBOL talent is being trained. Replacing these systems is notoriously expensive and risky: rewrites have been estimated at 50 cents or more per line of code, multi-year migration projects (attempted by major banks and government agencies) have frequently run over budget, caused service outages, or been abandoned outright, largely because decades of undocumented business logic, edge cases, and interdependencies are buried in the code and hard to fully replicate in a new language. As for the lab hook: a 1959 business language like COBOL stored money as an implied-decimal integer (125.50 stored as 000000012550) because early computers had no reliable native floating-point arithmetic for currency and floating-point math introduces rounding errors that are unacceptable in financial calculations — storing a fixed-width integer with an assumed decimal position (via COBOL’s PICTURE/V clause) guaranteed exact, predictable arithmetic and efficient fixed-length storage on hardware with very limited memory, a convention still used today precisely because it avoids floating-point precision problems.
+
+Sources:
+
+cobol coders going going gone
+Cobol brain drain: Survey results
+Our Ageing Computer Programming Workforce
+a 65 year old programming language called cobol still quietly processes over 3 trillion in banking transactions every single day
+COBOL - The 66-year-old program that’s running world’s biggest banks
+Are we overestimating the number of COBOL transactions each day?
+The programming language that doesn’t want to die
+
 
 ### Topic 3 — SWIFT basics (the financial payment messaging network)
 
@@ -975,6 +999,13 @@ Research points:
   - Which MT messages are still in use after that date, and why do old formats survive so long?
 - **Lab hook:** Your traffic generator sends **MT103** messages — a format that is now retired for cross-border payment instructions. Why might a training lab still teach MT103? What would change if Balerica switched to pacs.008?
 
+SWIFT (Society for Worldwide Interbank Financial Telecommunication) is a Belgian cooperative founded on 3 May 1973 by a group of banks, led by figures like Carl Reuterskiöld and Bessel Kok, to replace the slow, manual Telex system for international bank communication after the collapse of Bretton Woods increased cross-border transaction volume; it is owned and governed by its member financial institutions rather than any single government or company. Critically, SWIFT does not move money itself — it only carries standardized messages (payment instructions, confirmations, securities and trade messages) between financial institutions, while the actual settlement of funds happens separately through payment systems or, for cross-border transfers, through correspondent banking relationships, where banks hold accounts with each other (or with intermediary “correspondent” banks) to actually transfer value once the SWIFT message has told them what to do. Day to day, SWIFT is used by over 11,000 banks and financial institutions in 200+ countries, exchanging tens of millions of messages daily, to initiate wire transfers, confirm trades, report securities positions, and manage treasury operations — making it the backbone of roughly half of all high-value cross-border payments worldwide. Its main competitors/alternatives include CIPS (China’s RMB-focused cross-border system), SPFS (Russia’s domestic alternative built after sanctions threats), SFMS (India’s), Pix (Brazil’s real-time system), BRICS Pay, and blockchain-based challengers like Ripple that aim to settle value directly rather than just message about it; replacing SWIFT entirely would be extremely difficult because of its deep network effects (nearly every major bank is already connected), its role as an ISO standards registration authority, and the massive cost of banks re-engineering core systems, which is why most “alternatives” so far operate alongside it rather than replacing it. On the technical side, ISO 20022 is a modern, XML/JSON-based universal financial messaging standard that replaces the older, more rigid MT (Message Type) format: an MT103 is the classic customer credit transfer message (a bank telling another bank to credit an end customer), while an MT202 is a financial institution transfer (bank-to-bank movement of funds, often to cover or settle an MT103) — the key difference being who the ultimate beneficiary is, customer versus bank. These are being replaced by ISO 20022 “pacs” (payments clearing and settlement) messages: pacs.008 is the ISO 20022 equivalent of MT103 (customer credit transfer), and pacs.009 is the equivalent of MT202 (financial institution credit transfer). Per SWIFT’s own implementation FAQ, the MT/ISO 20022 “coexistence period” for cross-border payment instructions officially ended on 22 November 2025, after which MT103/MT202 instruction messages are no longer natively supported for cross-border payments (though contingency processing and in-flow translation exist temporarily, becoming chargeable from 1 January 2026); some MT messages, like MT199 and MT299 (used for gpi payment tracking), still remain in use post-deadline with no end date yet set, because they serve a narrower tracking/communication function rather than carrying payment instructions, and legacy formats generally persist longest wherever rip-and-replace is riskier than tolerating a translation layer. For the lab hook: a training lab may still teach MT103 because it’s simpler, well-documented, and conceptually illustrates the core idea of a cross-border credit transfer message even though it’s technically retired for live instructions; switching Balerica to pacs.008 would mean moving from SWIFT’s older fixed-field MT syntax to a richer, structured XML/JSON message with more granular, extensible fields (such as more structured remittance and party information), which better supports compliance screening and straight-through processing but requires updated parsing logic and schema validation in the traffic generator and any downstream processing code.
+
+Sources:
+
+SWIFT - Wikipedia
+ISO 20022: Implementation | Swift
+
 ### Topic 4 — API basics
 
 | Read | Watch |
@@ -994,6 +1025,8 @@ Research points:
   - Why should an API never trust incoming data, even from a "friendly" client?
 - **Lab hook:** Look at the runbook's API endpoints table. Which Balerica endpoints are `GET` and which are `POST`? Why does `/payments` need to be `POST`?
 
+
+
 ### Topic 5 — Where COBOL, SWIFT, APIs, and databases meet
 
 | Read | Watch |
@@ -1008,6 +1041,11 @@ Research points:
 - What risks does the GAO report describe for systems that are decades old?
 - How is AI being used today to understand or modernize COBOL systems, and what are its limits?
 
+An API (Application Programming Interface) is a defined set of rules and protocols that lets separate software systems communicate and exchange data or trigger functionality without needing to know each other’s internal implementation; the general concept dates back to early software libraries, but the “Web API” era really took off with Roy Fielding’s 2000 doctoral dissertation, which introduced REST (Representational State Transfer) as an architectural style built on existing HTTP verbs, URLs, and stateless request/response semantics. APIs are used virtually everywhere today — essentially every modern web and mobile app, cloud service, IoT device, and backend microservice relies on APIs to talk to databases, third-party services, payment processors, or other internal systems, typically over HTTP(S) using patterns like request/response calls, webhooks, or streaming. The major competing API styles are REST (resource-based, uses standard HTTP methods and usually JSON, simple and widely adopted), SOAP (an older, XML-based, strictly-typed protocol with built-in standards for security and transactions, still common in enterprise/legacy and financial systems), GraphQL (lets clients request exactly the fields they need in a single flexible query, reducing over-fetching, popularized by Facebook), and gRPC (a high-performance, binary protocol built on HTTP/2 and Protocol Buffers, favored for fast internal service-to-service communication). APIs are foundational to AI adoption because they’re the mechanism by which applications actually invoke AI models as a service — for example, an EC2 instance doesn’t run a foundation model locally; it sends an authenticated HTTPS API request (typically a POST with a JSON payload) to Amazon Bedrock’s API endpoint, which routes the request to the underlying model and returns a JSON response, meaning nearly all practical “AI integration” in cloud architectures is really API integration. Securing API communications is difficult because every exposed endpoint is also an attack surface: you must correctly authenticate and authorize every caller (API keys, OAuth tokens, IAM roles), encrypt traffic in transit with TLS to prevent eavesdropping or tampering, rigorously validate and sanitize all input even from clients you “trust” (since credentials can be stolen, clients can be compromised, or requests can be forged), and guard against the specific risks catalogued in the OWASP API Security Top 10, such as broken object-level authorization, excessive data exposure, lack of rate limiting, and injection attacks. For the next-lab concepts: GET requests retrieve data and should be safe/idempotent with no side effects (and parameters typically travel in the URL, which is why sensitive data shouldn’t go there), while POST requests send data to create or change something on the server and carry their payload in the request body; JSON (JavaScript Object Notation) is a lightweight, human-readable, language-agnostic text format for structured data that APIs favor because it maps naturally to objects/dictionaries in most programming languages and is far less verbose than XML; and an API should never trust incoming data — even from a “friendly” client — because any client-side validation can be bypassed, requests can be intercepted or forged, and the server is the last line of defense against malformed, malicious, or unauthorized data actually corrupting state or exposing other users’ information.
+
+I don’t have access to your lab’s runbook or its API endpoints table, so I can’t tell you specifically which Balerica endpoints are GET vs POST — if you paste the table or the relevant section, I can walk through it. In general, though, an endpoint like /payments needs to be POST rather than GET because it creates a new resource (a transaction) and causes a side effect (money moving, records changing) — GET requests are supposed to be safe and idempotent (repeatable with no extra effect, and cacheable/loggable in URLs/browser history/proxies), which is exactly wrong for something like submitting a payment, where you don’t want the request accidentally repeated, cached, or exposed in a URL or server log.
+
+
 ---
 
 ## 10. "Be A Man" (BAM) extra credit
@@ -1016,7 +1054,7 @@ Steps 5–8 of the runbook are now fair game. Each screenshot must show the **ID
 
 ### BAM_2.1 — Make `/ask` answer with Bedrock
 
-**Submission:** `BAM_2.1.jpg`
+**Submission:** [`BAM_2.1.jpg`](screenshots/BAM_2.1.jpg)
 
 **Student Challenge:** make the Balerica AI helper answer from a real Claude model instead of `offline-knowledge-base`.
 
@@ -1139,7 +1177,7 @@ Then answer:
 - [ ] I committed and pushed everything to my GitHub repository by **Tuesday, November 3, 2026, 12:00 PM Central Time**.
 
 **Extra credit**
-- [ ] `BAM_2.1.jpg` — `/ask` answered by Bedrock.
+- [x] `BAM_2.1.jpg` — `/ask` answered by Bedrock.
 - [ ] `BAM_2.2.jpg` — baked launch template works.
 - [ ] `BAM_2.3.jpg` — golden AMI works.
 - [ ] I deregistered unused AMIs, deleted their snapshots, and checked for leftover billable resources.
