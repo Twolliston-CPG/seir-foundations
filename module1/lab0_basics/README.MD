@@ -1,4 +1,3 @@
-
 # SEIR Foundations — Module 1, Lab 0
 ## Your First EC2 Deployment: Launch, Connect, Observe, Repeat
 
