@@ -1,143 +1,63 @@
-Sample Code
+# Agent Framework Options — Requirements First
 
+> **CLASSROOM REFERENCE, NOT LAW.** This package is a collection of independent examples, not a mandated stack. Do not install or combine every framework automatically. Define your requirements first, select the smallest suitable architecture, and justify your choices.
 
-Sample CrewAI Import
+## Before writing agent code
 
+Write a brief decision record: business problem; inputs and outputs; trust boundaries; required LLM behavior; tool permissions; approval gates; acceptable latency and cost; observability; evaluation tests; deployment environment; and conditions for success or failure. Determine whether an LLM or multi-agent design is needed at all.
 
-    # 04_crewai_example.py
-    
-    from crewai import Agent, Task, Crew, Process
-    
-    # Define a security analyst.
-    analyst = Agent(
-        role="AWS Security Analyst",
-        goal="Identify potential AWS security risks",
-        backstory="Experienced cloud security engineer",
-        llm="openai/gpt-4.1-mini",
-        verbose=True
-    )
-    
-    # Define an auditor.
-    auditor = Agent(
-        role="Security Auditor",
-        goal="Review security findings for completeness",
-        backstory="Independent cybersecurity reviewer",
-        llm="openai/gpt-4.1-mini",
-        verbose=True
-    )
-    
-    # Assign work to the analyst.
-    analysis_task = Task(
-        description=(
-            "Evaluate the security risk of an EC2 "
-            "security group exposing SSH to 0.0.0.0/0."
-        ),
-        expected_output="A concise security risk assessment",
-        agent=analyst
-    )
-    
-    # Assign work to the auditor.
-    audit_task = Task(
-        description="Review the analyst's assessment.",
-        expected_output="A final reviewed security report",
-        agent=auditor,
-        context=[analysis_task]
-    )
-    
-    # Coordinate the agents.
-    crew = Crew(
-        agents=[analyst, auditor],
-        tasks=[analysis_task, audit_task],
-        process=Process.sequential
-    )
-    
-    result = crew.kickoff()
-    print(result)
+## What the options mean
 
+| Option | Potential purpose | When it may be unnecessary |
+| --- | --- | --- |
+| Pydantic | Validated schemas and output contracts | No structured inputs or outputs |
+| CrewAI | Role-oriented specialist agent execution | Simple deterministic logic or one tool call |
+| LangChain | LLM, tool, and retrieval integration | No LLM/tool integration needed, or another library already suffices |
+| LangGraph | Stateful workflow, routing, and human gates | Straight-line execution with no state management needs |
+| Langfuse | Tracing, evaluation, prompt and cost observability | Existing monitoring fully meets documented needs |
+| Hermes Agent | Ready-made autonomous agent runtime and skills | Custom restrictive workflow provides better governance |
 
-Sample Import
+CrewAI and LangChain are often **alternatives** for a particular agent implementation. CrewAI and LangGraph can coexist, but students must decide *which component owns orchestration* to prevent conflicting execution control. LangChain's higher-level agents already use LangGraph internally; adding another graph is not automatically useful. Hermes is not merely another Python class that must be added to the same process.
 
+## Run the independent examples
 
-    from pydantic import BaseModel
-    from typing import Literal
-    
-    class SecurityFinding(BaseModel):
-        resource_id: str
-        vulnerability: str
-        severity: Literal["LOW", "MEDIUM", "HIGH", "CRITICAL"]
-    
-    class TerraformAssessment(BaseModel):
-        file_path: str
-        misconfiguration: str
-        recommendation: str
-    
-    class ComplianceReport(BaseModel):
-        framework: str
-        status: Literal["PASS", "FAIL", "REVIEW"]
-        findings: list[str]
-        remediation_required: bool
+```bash
+python -m pip install 'pydantic>=2,<3'
+python sample.py                    # local, no LLM or network
+python sample.py --demo hermes-info # information only
 
-Sample Import 2 Frameworks
+# Install only the dependency for the chosen experiment:
+python -m pip install langgraph
+python sample.py --demo langgraph   # local, no LLM
 
+# Optional provider-backed experiments; configure model credentials first:
+python -m pip install crewai
+python sample.py --demo crewai
 
-    from typing import Literal
-    from pydantic import BaseModel, Field
-    from crewai import Agent, Task
-    
-    # Pydantic: Define the data contract.
-    class SecurityFinding(BaseModel):
-        resource_id: str
-        severity: Literal["LOW", "MEDIUM", "HIGH", "CRITICAL"]
-        description: str
-        recommendation: str
-        evidence: list[str] = Field(min_length=1)
-    
-    # CrewAI: Define the worker.
-    security_agent = Agent(
-        role="Security Analyst",
-        goal="Identify AWS security vulnerabilities",
-        backstory="Experienced cloud security engineer",
-    )
-    
-    # CrewAI: Assign work and specify its output schema.
-    security_task = Task(
-        description="Analyze the supplied AWS security findings.",
-        expected_output="A validated security finding",
-        agent=security_agent,
-        output_pydantic=SecurityFinding,
-    )
+python -m pip install langchain langchain-openai
+python sample.py --demo langchain
 
+# Langfuse needs LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY, LANGFUSE_BASE_URL
+python -m pip install langfuse
+python sample.py --demo langfuse
+```
 
+Tested: syntax and local Pydantic demonstration (where dependencies are available). Optional provider-backed examples are **reference snippets** and have not been run against live services. Review dependency/version changes, pricing and approval requirements before use.
 
+## Example questions for students
 
-How three Agentic AI Framework technologies integrate in Python
+1. What requirements justify using a model rather than ordinary Python?
+2. Does the security finding require a Pydantic contract? What can the contract *not* prove?
+3. Would one agent suffice? What concrete benefit is gained by using several?
+4. Who controls state, retries, failures, approvals, and termination?
+5. Which calls cross a network boundary? What secrets and IAM permissions do they need?
+6. Which frameworks can be removed while preserving the required behavior?
 
-The essential integration looks like this:
+### Official documentation
 
-    # Pydantic defines the structure of a finding.
-    class SecurityFinding(BaseModel):
-        resource_id: str
-        severity: Literal["LOW", "MEDIUM", "HIGH", "CRITICAL"]
-        vulnerability: str
-        evidence: list[str]
-    
-    # CrewAI defines the specialist and its expected output.
-    task = Task(
-        description="Review supplied AWS security evidence",
-        expected_output="A structured security finding",
-        agent=security_agent,
-        output_pydantic=SecurityFinding,
-    )
-    
-    # LangGraph registers the Python function that
-    # invokes the CrewAI specialist.
-    workflow = StateGraph(AssessmentState)
-    
-    workflow.add_node("security", security_node)
-    workflow.add_node("infrastructure", infrastructure_node)
-    workflow.add_node("audit", audit_node)
-    
-    workflow.add_edge(START, "security")
-    # Conditional routing and remaining edges are
-    # defined in the complete application.
-
+- [Pydantic](https://docs.pydantic.dev/latest/)
+- [CrewAI](https://docs.crewai.com/)
+- [LangChain](https://docs.langchain.com/oss/python/langchain/overview)
+- [LangGraph](https://docs.langchain.com/oss/python/langgraph/overview)
+- [Langfuse](https://langfuse.com/docs)
+- [Hermes Agent](https://hermes-agent.nousresearch.com/docs/)

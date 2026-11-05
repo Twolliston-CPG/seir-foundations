@@ -203,6 +203,7 @@ Use this format:
 AI used = BEDROCK_MODEL_ID=us.anthropic.claude-sonnet-4-6 
 Conversation share link = (https://github.com/Twolliston-CPG/seir-foundations/blob/main/module1/lesson1_ec2/ai_review_transcript_tim_wolliston.txt) [`or see ai_review_transcript_tim_wolliston`](module1/lesson1_ec2/ai_review_transcript_tim_wolliston.txt)
 
+
 Q1: ("Please review with me this runbook:
   https://github.com/BalericaAI/SEIR-Foundations/blob/main/module1/lesson1_ec2/API/runbook.md. explain
   for me what are the necesarry step needed for AWS Bedrocks anthropic model to return a answer to
@@ -770,7 +771,7 @@ This file has **two halves**: one about your spotter, and one about the person y
 ```
 Things I learned from research:
 1) How to create my own script to run frequently used commands e.g. menu.sh & legacy_bank_app.sh.
-2) I also learned who to leverage ai to teach me thing I don't know or understand.
+2) I also learned who to leverage ai to teach me thing I don’t know or understand.
 3) I also learned how to ask ai to export conversation history as well as transcripts.
 4) I learned how to access AWS Bedrock anthropic models from a linux EC2 instance.
 5) I learned how to have ai review my github pushes ensuring I have a clean tree and no unnecessary branches exists.
@@ -794,6 +795,7 @@ Be specific. Ask your spotter directly — these are **their** lessons, not your
 
 `No feedback from spotter`
 
+
 - ✅ "Learned that return code 4 means the account was not found, and the program does not crash."
 - ❌ "Learned a lot about EC2."
 
@@ -812,6 +814,7 @@ Each screenshot must also show the **ID line** from Section 3.2. Use a **lab-run
 **Use your own transaction IDs.** Every `TXN` you post must start with your initials, for example `TXN-JD-0001` for Jane Doe. Do not copy the IDs in the examples below.
 
 Screenshot as Screenshot as [`payment-post`](screenshots/step3-payment-post.png).
+
 
 ### 7.1 Find your customers
 
@@ -975,7 +978,6 @@ COBOL - The 66-year-old program that’s running world’s biggest banks
 Are we overestimating the number of COBOL transactions each day?
 The programming language that doesn’t want to die
 
-
 ### Topic 3 — SWIFT basics (the financial payment messaging network)
 
 > **Note:** This is **SWIFT, the Society for Worldwide Interbank Financial Telecommunication** — the network banks use to send payment instructions. It is **not** Apple's Swift programming language.
@@ -1027,6 +1029,7 @@ Research points:
 
 
 
+
 ### Topic 5 — Where COBOL, SWIFT, APIs, and databases meet
 
 | Read | Watch |
@@ -1044,7 +1047,6 @@ Research points:
 An API (Application Programming Interface) is a defined set of rules and protocols that lets separate software systems communicate and exchange data or trigger functionality without needing to know each other’s internal implementation; the general concept dates back to early software libraries, but the “Web API” era really took off with Roy Fielding’s 2000 doctoral dissertation, which introduced REST (Representational State Transfer) as an architectural style built on existing HTTP verbs, URLs, and stateless request/response semantics. APIs are used virtually everywhere today — essentially every modern web and mobile app, cloud service, IoT device, and backend microservice relies on APIs to talk to databases, third-party services, payment processors, or other internal systems, typically over HTTP(S) using patterns like request/response calls, webhooks, or streaming. The major competing API styles are REST (resource-based, uses standard HTTP methods and usually JSON, simple and widely adopted), SOAP (an older, XML-based, strictly-typed protocol with built-in standards for security and transactions, still common in enterprise/legacy and financial systems), GraphQL (lets clients request exactly the fields they need in a single flexible query, reducing over-fetching, popularized by Facebook), and gRPC (a high-performance, binary protocol built on HTTP/2 and Protocol Buffers, favored for fast internal service-to-service communication). APIs are foundational to AI adoption because they’re the mechanism by which applications actually invoke AI models as a service — for example, an EC2 instance doesn’t run a foundation model locally; it sends an authenticated HTTPS API request (typically a POST with a JSON payload) to Amazon Bedrock’s API endpoint, which routes the request to the underlying model and returns a JSON response, meaning nearly all practical “AI integration” in cloud architectures is really API integration. Securing API communications is difficult because every exposed endpoint is also an attack surface: you must correctly authenticate and authorize every caller (API keys, OAuth tokens, IAM roles), encrypt traffic in transit with TLS to prevent eavesdropping or tampering, rigorously validate and sanitize all input even from clients you “trust” (since credentials can be stolen, clients can be compromised, or requests can be forged), and guard against the specific risks catalogued in the OWASP API Security Top 10, such as broken object-level authorization, excessive data exposure, lack of rate limiting, and injection attacks. For the next-lab concepts: GET requests retrieve data and should be safe/idempotent with no side effects (and parameters typically travel in the URL, which is why sensitive data shouldn’t go there), while POST requests send data to create or change something on the server and carry their payload in the request body; JSON (JavaScript Object Notation) is a lightweight, human-readable, language-agnostic text format for structured data that APIs favor because it maps naturally to objects/dictionaries in most programming languages and is far less verbose than XML; and an API should never trust incoming data — even from a “friendly” client — because any client-side validation can be bypassed, requests can be intercepted or forged, and the server is the last line of defense against malformed, malicious, or unauthorized data actually corrupting state or exposing other users’ information.
 
 I don’t have access to your lab’s runbook or its API endpoints table, so I can’t tell you specifically which Balerica endpoints are GET vs POST — if you paste the table or the relevant section, I can walk through it. In general, though, an endpoint like /payments needs to be POST rather than GET because it creates a new resource (a transaction) and causes a side effect (money moving, records changing) — GET requests are supposed to be safe and idempotent (repeatable with no extra effect, and cacheable/loggable in URLs/browser history/proxies), which is exactly wrong for something like submitting a payment, where you don’t want the request accidentally repeated, cached, or exposed in a URL or server log.
-
 
 ---
 
