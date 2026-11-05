@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 # CHEWBACCA BITES YOU!!!!!
 # YES, YOU. NOT THE STUDENT NEXT TO YOU.
 # =============================================================
-SLACK_WORKSPACE_URL = "https://chewbacca.slack.com"
+SLACK_WORKSPACE_URL = "https://seir-foundation.slack.com"
 
 # The workspace URL is NOT the private Incoming Webhook URL.
 # Keep SLACK_WEBHOOK_URL in .env, never in Python or GitHub.
