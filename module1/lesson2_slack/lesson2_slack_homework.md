@@ -176,8 +176,26 @@ Message: (DRILL — not real) account_lookup returned code 12: ledger file not r
 
 ### Section 3, Experiment 1 — Prediction vs result (SLACK_ALERT_SEVERITY=CRITICAL, rerun hw2)
 
+1. Set SLACK_ALERT_SEVERITY=CRITICAL in .env and rerun script 2. Predict first: how many of the four messages will arrive? 0
+
 _Prediction:_
 report will not be sent to slack as there are no critical incidents
 
 _Result:_
 No report sent to slack
+
+2. Set SLACK_ALERTS_ENABLED=false and run script 1. What happens, and why is a kill switch like this useful during maintenance windows?
+
+No reporting was sent to slack
+
+You don't want to send these type of reports during maintenance becuase they will be false alarms. Besides if critical incidents creates Jira tickets you wouldn't want those tickets automatically created during maintenance time.
+
+3. Open hw4_disk_watch.py in nano and change the WARNING threshold from 75 to a number below your current disk usage. Rerun. Did the severity change? No
+
+The serverity was still a warning.
+
+4. Put everything back: SLACK_ALERT_SEVERITY=INFO, SLACK_ALERTS_ENABLED=true
+
+Done.
+
+
