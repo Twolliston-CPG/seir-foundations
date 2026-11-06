@@ -90,7 +90,7 @@ testing:
    to a number below your current disk usage. Rerun. Did the severity change?
 4. Put everything back: `SLACK_ALERT_SEVERITY=INFO`, `SLACK_ALERTS_ENABLED=true`.
 
-> **See [Section 6 — Notes](#6-notes) for answers and results to all experiments above.**
+> **See [Section 6 — Notes, Experiment 1](#section-3-experiment-1--prediction-vs-result-slack_alert_severitycritical-rerun-hw2) for answers and results to all experiments above.**
 
 ## 4. Rules
 
