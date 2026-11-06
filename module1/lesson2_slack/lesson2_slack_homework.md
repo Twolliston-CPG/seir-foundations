@@ -165,7 +165,7 @@ Several things could spike the CPU load average on the Balerica bank EC2 instanc
 - **A traffic spike or attack** — sudden burst of API requests to the bank's FastAPI endpoint
 
 ### hw6 — Which of these fake incidents deserves to wake a human at 3 AM?
-
+  
 _Answer:_
 
 ### Section 3, Experiment 1 — Prediction vs result (SLACK_ALERT_SEVERITY=CRITICAL, rerun hw2)
