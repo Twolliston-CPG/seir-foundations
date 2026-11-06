@@ -177,5 +177,7 @@ Message: (DRILL — not real) account_lookup returned code 12: ledger file not r
 ### Section 3, Experiment 1 — Prediction vs result (SLACK_ALERT_SEVERITY=CRITICAL, rerun hw2)
 
 _Prediction:_
+report will not be sent to slack as there are no critical incidents
 
 _Result:_
+No report sent to slack
