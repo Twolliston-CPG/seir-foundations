@@ -62,7 +62,7 @@ source venv/bin/activate
 
 ## 2. The seven scripts — run them in order
 
-| # | Date | Instance ID | Public DNS | Script (click for screenshot) | Run | What it teaches |
+| # | Date | Instance ID | Public DNS | Script (click for screenshots) | Run | What it teaches |
 |---|------|-------------|------------|-------------------------------|-----|-----------------|
 | 1 | 11.05.2026 1:37:21 am | i-08c65a72965755bed | ec2-3-89-228-59.compute-1.amazonaws.com | [`hw1_hello_slack.py`](screenshots/lesson2_slack_hw1.jpg) | `python hw1_hello_slack.py` | Calling `send_alert()` with your own words (edit `MY_NAME` first — nano!) |
 | 2 | 11.05.2026 11:27:58| i-0e3df50b16b502ec2 |ec2-3-90-164-37.compute-1.amazonaws.com | [`hw2_severity_tour.py`](screenshots/lesson2_slack_hw2.a.jpg)[`B.`](screenshots/lesson2_slack_hw2.a.jpg) | `python hw2_severity_tour.py` | All four severities and how the `.env` threshold filters them |
