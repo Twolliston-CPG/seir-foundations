@@ -69,8 +69,8 @@ source venv/bin/activate
 | 3 | 11.05.2026 4:29 PM EST | i-086544e950c0de391 | ec2-54-226-203-251.compute-1.amazonaws.com | [`hw3_server_time.py`](screenshots/lesson2_slack_hw3.jpg) | `python hw3_server_time.py` | Timestamps, and why servers speak UTC |
 | 4 | 11.05.2026 6:34 PM EST | i-08641171590dcbdc7 | ec2-54-221-86-126.compute-1.amazonaws.com | [`hw4_disk_watch.py`](screenshots/lesson2_slack_hw4.jpg) | `python hw4_disk_watch.py` | A REAL monitor: measure disk, choose severity with if/else |
 | 5 | 11.05.2026 7:15 PM EST | i-0daa93296afe7fe06 | ec2-100-55-46-166.compute-1.amazonaws.com | [`hw5_load_check.py`](screenshots/lesson2_slack_hw5.jpg) | `python hw5_load_check.py` | CPU load average, comparing against a limit |
-| 6 | | | | `hw6_incident_drill.py` | `python hw6_incident_drill.py` | Randomized (fake) bank incidents — run it 2–3 times |
-| 7 | | | | `hw7_morning_report.py` | `python hw7_morning_report.py` | Capstone: one multi-line report combining everything |
+| 6 | 11.05.2026 9:27 PM EST | i-0f38a76c5da626324 | ec2-98-93-198-219.compute-1.amazonaws.com | [`hw6_incident_drill.py`](screenshots/lesson2_slack_hw6.jpg) | `python hw6_incident_drill.py` | Randomized (fake) bank incidents — run it 2–3 times |
+| 7 | 11.05.2026 10:13 PM EST | i-0b5d383df0d7ea105 | ec2-54-82-118-145.compute-1.amazonaws.com | [`hw7_morning_report.py`](screenshots/lesson2_slack_hw7.jpg) | `python hw7_morning_report.py` | Capstone: one multi-line report combining everything |
 
 Each script prints what happened in the terminal AND tells you what to look
 for in Slack. Read the source of every script before you run it — they are
@@ -167,6 +167,12 @@ Several things could spike the CPU load average on the Balerica bank EC2 instanc
 ### hw6 — Which of these fake incidents deserves to wake a human at 3 AM?
   
 _Answer:_
+BALERICA AI ALERT
+Severity: CRITICAL
+Agent: hw6_incident_drill.py
+Workspace: https://seir-foundation.slack.com
+Incident: DRILL-3522
+Message: (DRILL — not real) account_lookup returned code 12: ledger file not reachable.
 
 ### Section 3, Experiment 1 — Prediction vs result (SLACK_ALERT_SEVERITY=CRITICAL, rerun hw2)
 
