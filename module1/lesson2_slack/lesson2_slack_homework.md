@@ -90,6 +90,8 @@ testing:
    to a number below your current disk usage. Rerun. Did the severity change?
 4. Put everything back: `SLACK_ALERT_SEVERITY=INFO`, `SLACK_ALERTS_ENABLED=true`.
 
+> **See [Section 6 — Notes](#6-notes) for answers and results to all experiments above.**
+
 ## 4. Rules
 
 - **Synthetic messages only.** Never send real passwords, keys, customer
