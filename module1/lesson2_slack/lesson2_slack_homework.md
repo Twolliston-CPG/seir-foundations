@@ -65,7 +65,7 @@ source venv/bin/activate
 | # | Date | Instance ID | Public DNS | Script (click for screenshots) | Run | What it teaches |
 |---|------|-------------|------------|-------------------------------|-----|-----------------|
 | 1 | 11.05.2026 1:37:21 am | i-08c65a72965755bed | ec2-3-89-228-59.compute-1.amazonaws.com | [`hw1_hello_slack.py`](screenshots/lesson2_slack_hw1.jpg) | `python hw1_hello_slack.py` | Calling `send_alert()` with your own words (edit `MY_NAME` first — nano!) |
-| 2 | 11.05.2026 11:27:58| i-0e3df50b16b502ec2 |ec2-3-90-164-37.compute-1.amazonaws.com | [`hw2_severity_tour.py`](screenshots/lesson2_slack_hw2.a.jpg)[`B.`](screenshots/lesson2_slack_hw2.a.jpg) | `python hw2_severity_tour.py` | All four severities and how the `.env` threshold filters them |
+| 2 | 11.05.2026 11:27:58| i-0e3df50b16b502ec2 |ec2-3-90-164-37.compute-1.amazonaws.com | [`hw2_severity_tour.a.py`](screenshots/lesson2_slack_hw2.a.jpg)[`b.`](screenshots/lesson2_slack_hw2.a.jpg) | `python hw2_severity_tour.py` | All four severities and how the `.env` threshold filters them |
 | 3 | 11.05.2026 4:29 PM EST | i-086544e950c0de391 | ec2-54-226-203-251.compute-1.amazonaws.com | [`hw3_server_time.py`](screenshots/lesson2_slack_hw3.jpg) | `python hw3_server_time.py` | Timestamps, and why servers speak UTC |
 | 4 | 11.05.2026 6:34 PM EST | i-08641171590dcbdc7 | ec2-54-221-86-126.compute-1.amazonaws.com | [`hw4_disk_watch.py`](screenshots/lesson2_slack_hw4.jpg) | `python hw4_disk_watch.py` | A REAL monitor: measure disk, choose severity with if/else |
 | 5 | 11.05.2026 7:15 PM EST | i-0daa93296afe7fe06 | ec2-100-55-46-166.compute-1.amazonaws.com | [`hw5_load_check.py`](screenshots/lesson2_slack_hw5.jpg) | `python hw5_load_check.py` | CPU load average, comparing against a limit |
