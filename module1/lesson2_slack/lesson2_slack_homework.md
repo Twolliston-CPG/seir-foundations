@@ -156,6 +156,13 @@ The quiet INFO is a GOOD design because a Jira ticket could be created when disk
 ### hw5 — What would make this number spike on the Balerica bank?
 
 _Answer:_
+Several things could spike the CPU load average on the Balerica bank EC2 instance:
+- **High transaction volume** — many concurrent banking transactions being processed at once (e.g. end-of-month payroll runs)
+- **Batch jobs** — end-of-day reconciliation, report generation, or interest calculations processing large amounts of data
+- **Log analysis** — running `analyze_logs.py` over large log files, especially if many errors occurred
+- **Multiple agents running simultaneously** — `health.py`, `analyze_logs.py`, and `slack.py` all firing at once
+- **Fraud detection** — intensive pattern-matching across transaction history
+- **A traffic spike or attack** — sudden burst of API requests to the bank's FastAPI endpoint
 
 ### hw6 — Which of these fake incidents deserves to wake a human at 3 AM?
 
