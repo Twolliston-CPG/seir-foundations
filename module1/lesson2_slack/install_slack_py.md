@@ -49,7 +49,7 @@ Expected output ends with `Resolving deltas: 100% ..., done.`
 Confirm the Lesson 2 files exist:
 
 ```bash
-ls ~/SEIR-Foundations/module1/lesson2_slack
+ls ./module1/lesson2_slack
 ```
 
 Expected output:
@@ -69,7 +69,7 @@ env_explained.md          nano_basics.md       slack.py
 future scripts (and your homework) can import it.
 
 ```bash
-cp ~/SEIR-Foundations/module1/lesson2_slack/slack.py /opt/balerica-bank/
+cp ./module1/lesson2_slack/slack.py /opt/balerica-bank/
 cd /opt/balerica-bank
 ls slack.py
 ```
@@ -111,7 +111,7 @@ browser when you open your Slack workspace. Then save and exit:
 Copy the template, lock it down, and edit it:
 
 ```bash
-cp -n ~/SEIR-Foundations/module1/lesson2_slack/slack.env.example /opt/balerica-bank/.env
+cp -n ./module1/lesson2_slack/slack.env.example /opt/balerica-bank/.env
 chmod 600 .env
 nano .env
 ```
