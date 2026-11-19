@@ -23,8 +23,8 @@
 | SST-10 | Task | [Morning] Shower and get myself & kids dressed | 2 |
 | SST-11 | Task | [Morning] Make breakfast for kids | 2 |
 | SST-12 | Task | [Morning] Check phone and messages | 1 |
-| SST-13 | Task | [Commute] Drive kids to school & head to Home-Office | 3 |
-| SST-14 | Task | [Commute] Check Mailbox | 1 |
+| SST-13 | Task | [Commute] Head to Home-Office | 3 |
+| SST-14 | Task | [Work] Check Mailbox | 1 |
 | SST-15 | Task | [Work] Check and respond to emails | 2 |
 | SST-16 | Task | [Work] Attend first meeting | 3 |
 | SST-17 | Task | [Work] Complete main assignment | 5 |
