@@ -49,8 +49,8 @@
 Save the following in a **private note** so you can configure the later Python integration. These values are examples; use your own.
 
 ```text
-JIRA_SITE_URL=https://studentname-seir.atlassian.net
-JIRA_EMAIL=student@example.com
+JIRA_SITE_URL=https://wollistonedu-seir.atlassian.net
+JIRA_EMAIL=wxxxxxxxxxxxu@gmail.com
 JIRA_PROJECT_KEY=BAI
 JIRA_TEST_ISSUE_KEY=BAI-1
 JIRA_DEFAULT_ISSUE_TYPE=Task
@@ -66,14 +66,14 @@ When that step arrives, use Atlassian's current instructions: [Manage API tokens
 
 ## 5. Verify completion
 
-- [ ] I created my own Atlassian account.
-- [ ] I can open my Jira Cloud site.
-- [ ] I selected or confirmed the Free plan.
-- [ ] I created the Balerica AI Incident Management project.
-- [ ] I know my **actual** project key.
-- [ ] I created and opened a manual test incident.
-- [ ] I saved the site URL, email, project key, and test issue key privately.
-- [ ] I have **not** shared any passwords or API tokens.
+- [x] I created my own Atlassian account.
+- [x] I can open my Jira Cloud site.
+- [x] I selected or confirmed the Free plan.
+- [x] I created the Balerica AI Incident Management project.
+- [x] I know my **actual** project key.
+- [x] I created and opened a manual test incident.
+- [x] I saved the site URL, email, project key, and test issue key privately.
+- [x] I have **not** shared any passwords or API tokens.
 
 ## 6. Troubleshooting and Claude Code guidance
 
