@@ -218,7 +218,7 @@ Steps 4 and beyond of `jira_install.md`, plus the full Jira + Slack integration 
 - **Terminal screenshots** must show the **ID line** (same as Lesson 1):
 
   ```bash
-  whoami && TZ='America/New_York' date && ec2-metadata -i && uptime -s
+  clear && seir-dashboard && whoami && timedatectl show -p Timezone --value && date && ec2-metadata -i && curl -s http://checkip.amazonaws.com && uptime -p && TZ=UTC who -b 
   ```
 
   Use your own zone. If `ec2-metadata` is missing, run `sudo dnf install -y ec2-utils` first.
@@ -256,7 +256,7 @@ Your screenshot must show your private note with **your email blurred**, next to
 4. Run:
 
    ```bash
-   whoami && TZ='Your/Zone' date && ec2-metadata -i && uptime -s
+   clear && seir-dashboard && whoami && timedatectl show -p Timezone --value && date && ec2-metadata -i && curl -s http://checkip.amazonaws.com && uptime -p && TZ=UTC who -b 
    python3 -m pip install requests python-dotenv
    python3 jira.py --verify
    ```
@@ -270,7 +270,7 @@ Your screenshot must show the ID line and `jira.py --verify` succeeding. `--veri
 Follow Section 5 of the [integration lab](https://github.com/BalericaAI/SEIR-Foundations/blob/main/module1/lesson3_Jira/readme.md):
 
 ```bash
-whoami && TZ='Your/Zone' date && ec2-metadata -i && uptime -s
+clear && seir-dashboard && whoami && timedatectl show -p Timezone --value && date && ec2-metadata -i && curl -s http://checkip.amazonaws.com && uptime -p && TZ=UTC who -b 
 mkdir -p data
 python3 slack.py --test
 python3 jira.py --verify
@@ -323,8 +323,9 @@ print(result)
 
 Replace `YOURINITIALS` with your initials. Run it **twice**:
 
+
 ```bash
-whoami && TZ='Your/Zone' date && ec2-metadata -i && uptime -s
+clear && seir-dashboard && whoami && timedatectl show -p Timezone --value && date && ec2-metadata -i && curl -s http://checkip.amazonaws.com && uptime -p && TZ=UTC who -b 
 python3 bam_dup_check.py
 python3 bam_dup_check.py
 ```
