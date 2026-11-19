@@ -355,12 +355,12 @@ In `lesson3_notes.md`, answer:
 
 | Item | Requirement | Due | Screenshot | Done? |
 |------|-------------|-----|------------|-------|
-| BAM_5.1 | `jira_install.md` Steps 4–5: private note (email blurred) + test incident open | Sat 11/14, 2 PM ET | `screenshots/BAM_5.1.jpg` | Yes / No |
-| BAM_5.2 | `jira.py --verify` succeeds on EC2 | Sat 11/14, 2 PM ET | `screenshots/BAM_5.2.jpg` | Yes / No |
-| BAM_5.3 | `incident.py --test` shows Jira key + Slack delivery | Sat 11/14, 2 PM ET | `screenshots/BAM_5.3.jpg` | Yes / No |
-| BAM_5.4 | Slack alert with clickable Jira link | Tue 11/17, 12 PM ET | `screenshots/BAM_5.4.jpg` | Yes / No |
-| BAM_5.5 | Jira issue created by `incident.py` | Tue 11/17, 12 PM ET | `screenshots/BAM_5.5.jpg` | Yes / No |
-| BAM_5.6 | Same incident ID twice → same Jira key | Tue 11/17, 12 PM ET | `screenshots/BAM_5.6.jpg` | Yes / No |
+| BAM_5.1 | `jira_install.md` Steps 4–5: private note (email blurred) + test incident open | Sat 11/18, 9 PM ET | [`screenshots/BAM_5.1.jpg`](screenshots/BAM_5.1.jpg) | Yes|
+| BAM_5.2 | `jira.py --verify` succeeds on EC2 | Sat 11/18, 9:05 PM ET | [`screenshots/BAM_5.2.jpg`](screenshots/BAM_5.2.jpg) | Yes|
+| BAM_5.3 | `incident.py --test` shows Jira key + Slack delivery | Wed 11/18, 12:37 AM ET | [`screenshots/BAM_5.3.jpg`](screenshots/BAM_5.3.jpg) | Yes |
+| BAM_5.4 | Slack alert with clickable Jira link | Tue 11/17, 12 PM ET | [`screenshots/BAM_5.4.jpg`](screenshots/BAM_5.4.jpg) | Yes|
+| BAM_5.5 | Jira issue created by `incident.py` | Tue 11/17, 11:46 PM ET | [`screenshots/BAM_5.5.jpg`](screenshots/BAM_5.5.jpg) | Yes / No |
+| BAM_5.6 | Same incident ID twice → same Jira key | Tue 11/17, 9:59 PM ET | [`screenshots/BAM_5.6.jpg`](screenshots/BAM_5.6.jpg) | Ye |
 | BAM_5.7 | One-day sprint completed; burndown or sprint report | Tue 11/17, 12 PM ET | `screenshots/BAM_5.7.jpg` | Yes / No |
 
 **Screenshot guidance:** Do not expose private keys, passwords, AWS access keys, Jira API tokens, Slack webhook URLs, or other secrets in any screenshot.
@@ -381,25 +381,25 @@ In `lesson3_notes.md`, answer:
 
 **Required**
 - [ ] I read chapters 1–3 of *Head First Agile*.
-- [ ] I created a **team-managed Scrum** space named `SEIR-Saga_YourNameHere` (not my BAI project).
-- [ ] I turned on **Estimation → Story points** for the space and screenshotted it.
-- [ ] I created **1 epic** (`A day in my shoes`), **at least 5 stories**, and **at least 20 tasks**, all with the epic as their Parent.
-- [ ] My tasks cover my **whole day**, including the mundane things (eating, walking, talking, driving, bathroom breaks).
-- [ ] **Every** story and task has a Story point estimate and a description of at least 2 sentences. (The epic has no points.)
-- [ ] Every story and task screenshot shows the **Story point estimate** field.
-- [ ] My `lesson3_jira/README.md` lists every item with its key, type, summary, and story points.
-- [ ] I uploaded `jira_estimation_on.jpg`, `jira_epic.jpg`, `jira_story.jpg`, `jira_task.jpg`, and `jira_backlog.jpg`.
-- [ ] I committed and pushed everything to my GitHub repository by **Tuesday, November 17, 2026, 12:00 PM Eastern Time**.
+- [x] I created a **team-managed Scrum** space named `SEIR-Saga_YourNameHere` (not my BAI project).
+- [x] I turned on **Estimation → Story points** for the space and screenshotted it.
+- [x] I created **1 epic** (`A day in my shoes`), **at least 5 stories**, and **at least 20 tasks**, all with the epic as their Parent.
+- [x] My tasks cover my **whole day**, including the mundane things (eating, walking, talking, driving, bathroom breaks).
+- [x] **Every** story and task has a Story point estimate and a description of at least 2 sentences. (The epic has no points.)
+- [x] Every story and task screenshot shows the **Story point estimate** field.
+- [x] My `lesson3_jira/README.md` lists every item with its key, type, summary, and story points.
+- [x] I uploaded `jira_estimation_on.jpg`, `jira_epic.jpg`, `jira_story.jpg`, `jira_task.jpg`, and `jira_backlog.jpg`.
+- [x] I committed and pushed everything to my GitHub repository by **Tuesday, November 17, 2026, 12:00 PM Eastern Time**.
 
 **Extra credit** (BAM_5.1–5.3 timestamped before **Saturday, November 14, 2026, 2:00 PM Eastern**; BAM_5.4 and up by **Tuesday, November 17, 2026, 12:00 PM Eastern**)
-- [ ] `BAM_5.1.jpg` — `jira_install.md` Steps 4–5 complete.
-- [ ] `BAM_5.2.jpg` — `jira.py --verify` succeeds.
-- [ ] `BAM_5.3.jpg` — `incident.py --test` succeeds.
-- [ ] `BAM_5.4.jpg` — Slack alert with a working Jira link.
-- [ ] `BAM_5.5.jpg` — Jira issue created by the integration.
-- [ ] `BAM_5.6.jpg` — duplicate detection proven.
+- [x] `BAM_5.1.jpg` — `jira_install.md` Steps 4–5 complete.
+- [x] `BAM_5.2.jpg` — `jira.py --verify` succeeds.
+- [x] `BAM_5.3.jpg` — `incident.py --test` succeeds.
+- [x] `BAM_5.4.jpg` — Slack alert with a working Jira link.
+- [x] `BAM_5.5.jpg` — Jira issue created by the integration.
+- [x] `BAM_5.6.jpg` — duplicate detection proven.
 - [ ] `BAM_5.7.jpg` — one-day sprint completed.
 - [ ] My `lesson3_notes.md` has the BAM section, with Instance IDs, the 5–8 sentence explanation, and the troubleshooting note.
-- [ ] No API token, webhook URL, or `.env` contents appear anywhere in my repo or screenshots.
+- [x] No API token, webhook URL, or `.env` contents appear anywhere in my repo or screenshots.
 
 > **Chewbacca's final assessment:** RRRRAAAWWWRRR! You turned a whole day into tickets. Breakfast has a key. Your commute has a story point. The bathroom break was estimated, scheduled, and closed. Next week, the bank writes its own tickets.

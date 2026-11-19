@@ -60,8 +60,8 @@ SST-17 — `[Work] Complete main assignment` — was estimated at 5 points becau
 
 | File | Description | Status |
 |------|-------------|--------|
-| `screenshots/jira_estimation_on.jpg` | Space Settings → Features with Estimation ON and Story points selected | [ ] |
-| `screenshots/jira_epic.jpg` | SST-1 epic open, child items and story points visible | [ ] |
-| `screenshots/jira_story.jpg` | One story open, showing Parent (SST-1), description, and Story point estimate | [ ] |
-| `screenshots/jira_task.jpg` | One task open, showing Parent (SST-1), description, and Story point estimate | [ ] |
-| `screenshots/jira_backlog.jpg` | Backlog or list view showing all stories and tasks with story point values | [ ] |
+| [`screenshots/jira_estimation_on.jpg`](screenshots/jira_estimation_on.jpg) | Space Settings → Features with Estimation ON and Story points selected | [ ] |
+| [`screenshots/jira_epic.jpg`](screenshots/jira_epic.jpg) | SST-1 epic open, child items and story points visible | [ ] |
+| [`screenshots/jira_story.jpg`](screenshots/jira_story.jpg) | One story open, showing Parent (SST-1), description, and Story point estimate | [ ] |
+| [`screenshots/jira_task.jpg`](screenshots/jira_task.jpg) | One task open, showing Parent (SST-1), description, and Story point estimate | [ ] |
+| [`screenshots/jira_backlog.jpg`](screenshots/jira_backlog.jpg) | Backlog or list view showing all stories and tasks with story point values | [ ] |
