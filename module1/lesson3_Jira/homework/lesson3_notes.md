@@ -10,7 +10,25 @@
 
 | BAM item | EC2 Instance ID |
 |----------|----------------|
+| BAM_5.1 | i-0c4e9d5802bb2e6be |
+| BAM_5.2 | i-0c4e9d5802bb2e6be |
+| BAM_5.3 | i-0c4e9d5802bb2e6be |
+| BAM_5.4 | i-0c4e9d5802bb2e6be |
+| BAM_5.5 | i-0c4e9d5802bb2e6be |
 | BAM_5.6 | i-0c4e9d5802bb2e6be |
+
+---
+
+### BAM_5.1 — jira_install.md Step 5 checklist
+
+- [x] I created my own Atlassian account.
+- [x] I can open my Jira Cloud site.
+- [x] I selected or confirmed the Free plan.
+- [x] I created the Balerica AI Incident Management project.
+- [x] I know my **actual** project key.
+- [x] I created and opened a manual test incident.
+- [x] I saved the site URL, email, project key, and test issue key privately.
+- [x] I have **not** shared any passwords or API tokens.
 
 ---
 
