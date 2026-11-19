@@ -14,14 +14,14 @@
 | SST-1 | Epic | A day in my shoes | — |
 | SST-2 | Story | As a person waking up, I get myself & the kids ready for the day so I can leave the house on time | 2 |
 | SST-3 | Story | As a work from home person, head to my home-office so I start work on-time | 1 |
-| SST-4 | Story | As a worker, I complete my day's responsibilities so I meet my obligations | 5 |
+| SST-4 | Story | As a worker, I complete my day's responsibilities so I meet my obligations | 2 |
 | SST-5 | Story | As a person, I eat and take breaks throughout the day so I stay energized | 1 |
 | SST-6 | Story | As a person, I cook dinner and complete my evening routine so I can start school work | 1 |
 | SST-7 | Story | As a person winding down, I complete my evening routine so I can rest | 3 |
 | SST-8 | Task | [Morning] Wake up and turn off alarm | 1 |
 | SST-9 | Task | [Morning] Brush teeth — 2 min, upstairs bathroom | 1 |
 | SST-10 | Task | [Morning] Shower and get myself & kids dressed | 2 |
-| SST-11 | Task | [Morning] Make breakfast for kids | 2 |
+| SST-11 | Task | [Morning] Make breakfast for kids | 1 |
 | SST-12 | Task | [Morning] Check phone and messages | 1 |
 | SST-13 | Task | [Commute] Head to Home-Office | 3 |
 | SST-14 | Task | [Work] Check Mailbox | 1 |
@@ -35,7 +35,7 @@
 | SST-22 | Task | [Evening] Change out of work clothes | 1 |
 | SST-23 | Task | [Evening] Cook dinner | 2 |
 | SST-24 | Task | [Evening] Eat dinner | 1 |
-| SST-25 | Task | [Evening] Help kids with their homework | 2 |
+| SST-25 | Task | [Evening] Help kids with their homework | 1 |
 | SST-26 | Task | [Evening] Study for SEIR Foundations & do homework | 3 |
 | SST-27 | Task | [Bedtime] Brush teeth and take a shower | 1 |
 | SST-28 | Task | [Bedtime] Set alarm and get into bed | 1 |
@@ -49,7 +49,7 @@
 
 **Space name and key:** `SEIR-Saga_TimWolliston` / `SST`
 
-**Total story points of all stories and tasks:** 63
+**Total story points of all stories and tasks:** 58
 
 **Your biggest task, and why you estimated it that way:**  
 SST-17 — `[Work] Complete main assignment` — was estimated at 5 points because it is the single highest-effort item in the entire day. Unlike tasks that are physical or routine (eating, driving, brushing teeth), completing a main work assignment requires sustained focus, context-switching cost if interrupted, and variable complexity depending on the sprint deliverable. It is the one task where "done" is not obvious from the start, which is exactly what makes high story point estimates appropriate in Agile estimation.
