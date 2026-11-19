@@ -10,7 +10,7 @@
 
 | BAM item | EC2 Instance ID |
 |----------|----------------|
-| BAM_5.6 | i-0232cefc90ad0fc05 ← verify this matches your screenshot |
+| BAM_5.6 | i-0c4e9d5802bb2e6be |
 
 ---
 
