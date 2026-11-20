@@ -398,7 +398,7 @@ In `lesson3_notes.md`, answer:
 - [x] `BAM_5.4.jpg` — Slack alert with a working Jira link.
 - [x] `BAM_5.5.jpg` — Jira issue created by the integration.
 - [x] `BAM_5.6.jpg` — duplicate detection proven.
-- [ ] `BAM_5.7.jpg` — one-day sprint completed.
+- [x] `BAM_5.7.jpg` — one-day sprint completed.
 - [x] My `lesson3_notes.md` has the BAM section, with Instance IDs, the 5–8 sentence explanation, and the troubleshooting note.
 - [x] No API token, webhook URL, or `.env` contents appear anywhere in my repo or screenshots.
 
