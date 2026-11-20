@@ -106,12 +106,9 @@ testing:
 
 Add to your homework repo (same repo and format as previous weeks):
 
-- One screenshot of `#balerica-alerts` showing **at least five different
-  homework alerts**, sensitive info hidden.
-- One screenshot of your terminal running `hw7_morning_report.py` with the
-  ID line from Lesson 1 (`whoami && TZ='Your/Zone' date && ec2-metadata -i`).
-- In your notes: answers to the "In your notes:" question each script prints,
-  plus your prediction-vs-result from experiment 1.
+- [x] [`screenshots/lesson2_slack_balerica_alerts.jpg`](screenshots/lesson2_slack_balerica_alerts.jpg) — `#balerica-alerts` showing hw1 through hw2 (5+ alerts), sensitive info hidden.
+- [x] [`screenshots/lesson2_slack_hw7.jpg`](screenshots/lesson2_slack_hw7.jpg) — terminal running `hw7_morning_report.py` with ID line.
+- [x] Notes: answers to all seven scripts + experiment 1 prediction vs result (see Section 6 above).
 
 > **Chewbacca's encouragement:** RRRRAAAWWWRRR! Seven scripts. Seven alerts.
 > Seven pieces of proof that it was never magic — it was you. Now the doubt
