@@ -338,7 +338,7 @@ Your screenshot must show the ID line and both runs returning the **same Jira is
 
 Turn Section 4 into a real sprint.
 
-1. In your `SEIR-Saga_YourNameHere` space, create a sprint named `Day Sprint — YYYY-MM-DD` that lasts **one day**.
+1. In your `SEIR-Saga_TimWolliston` space, create a sprint named `Day Sprint — 2026-11-20` that lasts **one day**.
 2. Move your stories and tasks into it, and **start the sprint** in the morning.
 3. As you actually do each thing during the day, move it to **Done**.
 4. At the end of the day, **complete the sprint**. Anything unfinished goes back to the backlog.
@@ -361,7 +361,7 @@ In `lesson3_notes.md`, answer:
 | BAM_5.4 | Slack alert with clickable Jira link | Tue 11/17, 11:46 PM ET | [`screenshots/BAM_5.4.jpg`](screenshots/BAM_5.4.jpg) | Yes|
 | BAM_5.5 | Jira issue created by `incident.py` | Tue 11/17, 11:46 PM ET | [`screenshots/BAM_5.5.jpg`](screenshots/BAM_5.5.jpg) | Yes |
 | BAM_5.6 | Same incident ID twice → same Jira key | Tue 11/17, 9:59 PM ET | [`screenshots/BAM_5.6.jpg`](screenshots/BAM_5.6.jpg) | Yes |
-| BAM_5.7 | One-day sprint completed; burndown or sprint report | Tue 11/17, 12 PM ET | `screenshots/BAM_5.7.jpg` | No |
+| BAM_5.7 | One-day sprint completed; burndown or sprint report | Tue 11/17, 12 PM ET | [`screenshots/BAM_5.7.jpg`](screenshots/BAM_5.7.jpg) | Yes |
 
 **Screenshot guidance:** Do not expose private keys, passwords, AWS access keys, Jira API tokens, Slack webhook URLs, or other secrets in any screenshot.
 
@@ -380,7 +380,7 @@ In `lesson3_notes.md`, answer:
 &nbsp;
 
 **Required**
-- [ ] I read chapters 1–3 of *Head First Agile*.
+- [x] I read chapters 1–3 of *Head First Agile*.
 - [x] I created a **team-managed Scrum** space named `SEIR-Saga_YourNameHere` (not my BAI project).
 - [x] I turned on **Estimation → Story points** for the space and screenshotted it.
 - [x] I created **1 epic** (`A day in my shoes`), **at least 5 stories**, and **at least 20 tasks**, all with the epic as their Parent.
