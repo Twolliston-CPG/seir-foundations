@@ -80,7 +80,7 @@ Run these from `~/Documents/TheoWAF/seir-foundations`
 
 ---
 
-## One-Time Setup ✅ Done
+## One-Time Setup
 
 Add the original repo as the `upstream` remote. You only need to do this once.
 
@@ -94,11 +94,9 @@ Verify it was added:
 git remote -v
 ```
 
-> **Status:** `upstream` remote is configured and pointing to `https://github.com/BalericaAI/SEIR-Foundations.git`.
-
 ---
 
-## Step 1 — Get Ready ✅ Done
+## Step 1 — Get Ready
 
 ```bash
 cd ~/Documents/TheoWAF/seir-foundations
@@ -114,11 +112,9 @@ git stash
 git add <files> && git commit -m "your message"
 ```
 
-> **Status:** Confirmed on `main`. Uncommitted changes were stashed before proceeding.
-
 ---
 
-## Step 2 — Pull Updates from the Original Repo ✅ Done
+## Step 2 — Pull Updates from the Original Repo
 
 ```bash
 git fetch upstream
@@ -126,11 +122,9 @@ git fetch upstream
 
 This only downloads their changes into `upstream/*`. It does not change your files.
 
-> **Status:** Fetched all branches from upstream. 98 new commits downloaded.
-
 ---
 
-## Step 3 — Review Changes Before Merging ✅ Done
+## Step 3 — Review Changes Before Merging
 
 ```bash
 git log --oneline main..upstream/main        # their new commits since your branches diverged
@@ -148,11 +142,9 @@ The three-dot form (`...`) shows only what upstream changed since your branches 
 >
 > `git fetch` is always safe — nothing is applied to your files until `git merge`. Use the diff commands above as your inspection step. If anything looks unexpected, read the file before merging.
 
-> **Status:** Reviewed 98 upstream commits. 162 files changed. Confirmed no critical conflicts with local work before merging.
-
 ---
 
-## Step 4 — Merge Their Changes into Yours ✅ Done
+## Step 4 — Merge Their Changes into Yours
 
 ```bash
 git merge --allow-unrelated-histories upstream/main
@@ -164,5 +156,3 @@ Git keeps your changes and brings in theirs. If there are conflicts, Git will fl
 git add <resolved-files>
 git commit
 ```
-
-> **Status:** Merge complete. One conflict in root `README.md` resolved by keeping both versions. `module1/lesson1_ec2/README.md` (707 lines) preserved. Changes pushed to `origin/main` with `git push --force origin main` after rewriting commit history to replace personal email with GitHub noreply address.
