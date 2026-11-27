@@ -4,6 +4,19 @@ History of upstream sync runs. Add a new entry each time you run Workflow 2.
 
 ---
 
+## 2026-11-27
+
+**Step 2 — Pull Updates**
+Fetched upstream. 1 new commit since last merge: `fcaca27` — "Fix route-table inventory query so VPC teardown can actually delete custom route tables (#30)".
+
+**Step 3 — Review Changes**
+Reviewed the upstream fix. Upstream PR #30 addresses the same JMESPath negation bug we independently discovered and patched in commit `a30cf13` today. Our fix uses an equivalent approach. No new course content.
+
+**Step 4 — Merge**
+Not merged. Our route table fix (`a30cf13`) is equivalent to upstream's. Will merge upstream on the next content update to avoid a spurious conflict.
+
+---
+
 ## 2026-11-26
 
 **One-Time Setup**
