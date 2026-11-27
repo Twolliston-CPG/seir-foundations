@@ -1683,3 +1683,52 @@ aws ec2 describe-vpcs --vpc-ids "$VPC_ID" --output table
 > The Private 2 IDs are used in Lab 5 for an Aurora DB subnet group; Private 1 IDs in the ASG lab. Keep this VPC if continuing the course. Network-only resources generally do not incur hourly charges — but later public IPv4, NAT, EC2, ALB, Aurora, and traffic do.
 
 ---
+
+## AWS CLI Profiles
+
+Four named profiles are configured for this course — one per AWS Organizations account.
+
+| Profile | Account ID | Access method |
+|---------|-----------|---------------|
+| `master` | `755905325228` | IAM user `AWSCLI` (direct) |
+| `dev` | `932544973202` | `OrganizationAccountAccessRole` (assumed role) |
+| `qa` | `199332560469` | `OrganizationAccountAccessRole` (assumed role) |
+| `prod` | `076525066515` | `OrganizationAccountAccessRole` (assumed role) |
+
+### Check which account you're currently using
+
+```bash
+aws sts get-caller-identity
+```
+
+### Check a specific profile
+
+```bash
+aws sts get-caller-identity --profile <name>
+```
+
+### List all four profiles and their account IDs
+
+```bash
+for profile in master dev qa prod; do
+  account=$(aws sts get-caller-identity --profile "$profile" --query Account --output text)
+  echo "$profile → $account"
+done
+```
+
+### Switch to a profile for the whole session
+
+```bash
+export AWS_PROFILE=dev      # or master, qa, prod
+aws sts get-caller-identity  # verify
+```
+
+> **Note:** `export AWS_PROFILE` only lasts for the current terminal session. For AWS operations always confirm your active account before running scripts — especially teardown or destructive commands.
+
+### Switch back to master
+
+```bash
+export AWS_PROFILE=master
+```
+
+---
