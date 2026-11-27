@@ -1329,6 +1329,8 @@ curl -fsSL -o delete_balerica_vpc.sh \
 bash -n delete_balerica_vpc.sh
 ```
 
+> **Bug fix (commit `a30cf13`):** Earlier versions of both teardown scripts used a JMESPath filter `[?!Associations[?Main==\`true\`]]` to find custom route tables. This filter silently returns empty when route tables have no subnet associations (e.g. after a partial teardown run), leaving route tables behind and causing `DependencyViolation` on VPC delete. Fixed in both scripts by querying all route tables and excluding the main one via the EC2 `association.main` filter.
+
 #### If you used `create_balerica_with_gateway_vpc.sh` — use the matching teardown script
 
 Use `delete_balerica_with_gateway_vpc.sh`. It automatically deletes the NAT gateway, waits for the ENI to clear, releases the Elastic IP, then tears down the rest of the VPC in one run.
@@ -1381,10 +1383,14 @@ aws ec2 wait nat-gateway-deleted --nat-gateway-ids "$NAT_GW_ID"
 aws ec2 release-address --allocation-id "$EIP_ALLOC_ID"
 
 # Step 2 — Disassociate and delete custom route tables
+# Query all RTs, subtract the main one (JMESPath negation fails when associations are empty)
+MAIN_RT=$(aws ec2 describe-route-tables \
+  --filters "Name=vpc-id,Values=$VPC_ID" "Name=association.main,Values=true" \
+  --query 'RouteTables[0].RouteTableId' --output text)
 for rt in $(aws ec2 describe-route-tables \
   --filters "Name=vpc-id,Values=$VPC_ID" \
-  --query 'RouteTables[?Associations[0].Main!=`true`].RouteTableId' \
-  --output text); do
+  --query 'RouteTables[].RouteTableId' --output text); do
+  [[ "$rt" == "$MAIN_RT" ]] && continue
   for assoc in $(aws ec2 describe-route-tables --route-table-ids "$rt" \
     --query 'RouteTables[0].Associations[?Main!=`true`].RouteTableAssociationId' \
     --output text); do
