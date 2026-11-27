@@ -1710,10 +1710,31 @@ aws sts get-caller-identity --profile <name>
 ### List all four profiles and their account IDs
 
 ```bash
+printf "%-10s │ %-14s │ %-10s │ %s\n" "Profile" "Account ID" "Region" "Access Method"
+printf "%-10s─┼─%-14s─┼─%-10s─┼─%s\n" "──────────" "──────────────" "──────────" "──────────────────────────────────────────"
 for profile in master dev qa prod; do
-  account=$(aws sts get-caller-identity --profile "$profile" --query Account --output text)
-  echo "$profile → $account"
+  identity=$(aws sts get-caller-identity --profile "$profile" 2>/dev/null)
+  account=$(echo "$identity" | python3 -c "import sys,json; print(json.load(sys.stdin)['Account'])")
+  arn=$(echo "$identity" | python3 -c "import sys,json; print(json.load(sys.stdin)['Arn'])")
+  region=$(aws configure get region --profile "$profile" 2>/dev/null || echo "not set")
+  if echo "$arn" | grep -q "assumed-role"; then
+    method="OrganizationAccountAccessRole (assumed)"
+  else
+    user=$(echo "$arn" | awk -F/ '{print $NF}')
+    method="IAM user: $user (direct)"
+  fi
+  printf "%-10s │ %-14s │ %-10s │ %s\n" "$profile" "$account" "$region" "$method"
 done
+```
+
+Expected output:
+```
+Profile    │ Account ID     │ Region     │ Access Method
+───────────┼────────────────┼────────────┼───────────────────────────────────────────
+master     │ 755905325228   │ us-east-1  │ IAM user: AWSCLI (direct)
+dev        │ 932544973202   │ us-east-1  │ OrganizationAccountAccessRole (assumed)
+qa         │ 199332560469   │ us-east-1  │ OrganizationAccountAccessRole (assumed)
+prod       │ 076525066515   │ us-east-1  │ OrganizationAccountAccessRole (assumed)
 ```
 
 ### Switch to a profile for the whole session
