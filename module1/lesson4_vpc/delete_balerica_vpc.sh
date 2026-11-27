@@ -48,7 +48,9 @@ for tier in PUBLIC PRIVATE1 PRIVATE2; do
   done
 done
 live_subnets=$(a ec2 describe-subnets --filters "$filter" --query 'Subnets[].SubnetId' --output text)
-live_tables=$(a ec2 describe-route-tables --filters "$filter" --query 'RouteTables[?!Associations[?Main==`true`]].RouteTableId' --output text)
+_all_rt=$(a ec2 describe-route-tables --filters "$filter" --query 'RouteTables[].RouteTableId' --output text)
+_main_rt=$(a ec2 describe-route-tables --filters "$filter" "Name=association.main,Values=true" --query 'RouteTables[0].RouteTableId' --output text)
+live_tables=""; for _t in $_all_rt; do [[ "$_t" == "$_main_rt" ]] || live_tables+="${live_tables:+ }$_t"; done
 live_assoc=$(a ec2 describe-route-tables --filters "$filter" --query 'RouteTables[].Associations[?Main==`false`].RouteTableAssociationId[]' --output text)
 for id in $live_subnets; do contains "$id" "${subnets[@]}" || fail "Unrecorded subnet $id"; done
 for id in $live_tables; do contains "$id" "${tables[@]}" || fail "Unrecorded route table $id"; done
